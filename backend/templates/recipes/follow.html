@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+  {% block title %}Рецепты избранных авторов{% endblock %}
+  {% block content %}
+    <h1>Посты избранных авторов</h1>
+    {% include 'includes/switcher.html' %}
+    {% for recipe in page_obj %}
+      {% include 'includes/article.html' %}
+      {% if not forloop.last %}<hr>{% endif %}    
+    {% endfor %}
+    {% include 'includes/paginator.html' %}
+  {% endblock %}
