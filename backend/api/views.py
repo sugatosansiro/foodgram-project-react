@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from django_filters import DjangoFilterBackend
+from rest_framework.filters import DjangoFilterBackend
 from recipes.models import (Favorite, Follow, Ingredient, Recipe, ShoppingCart,
                             Tag)
 from recipes.pagination import RecipePagination
