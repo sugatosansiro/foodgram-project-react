@@ -9,7 +9,7 @@ services:
       - ./.env
 
   frontend:
-    image: sugatosansiro/foodgram_frontend:v1
+    image: sugatosansiro/foodgram_frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
