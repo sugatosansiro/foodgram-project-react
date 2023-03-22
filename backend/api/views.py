@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.filters import DjangoFilterBackend
 from recipes.models import (Favorite, Follow, Ingredient, Recipe, ShoppingCart,
                             Tag)
 from recipes.pagination import RecipePagination
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.filters import DjangoFilterBackend
 from rest_framework.pagination import BasePagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
