@@ -23,7 +23,7 @@ services:
       - media_value:/app/media/
     depends_on:
       - db
-    env_files:
+    env_file:
       - ./.env
     
   nginx:
