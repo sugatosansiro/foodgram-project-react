@@ -3,6 +3,7 @@ from recipes.models import (Favorite, Follow, Ingredient, Recipe, ShoppingCart,
                             Tag)
 from recipes.pagination import RecipePagination
 from rest_framework import filters, status, viewsets
+from django_filters import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.pagination import BasePagination
 from rest_framework.permissions import IsAuthenticated
@@ -94,7 +95,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     queryset = Recipe.objects.all()
     http_method_name = ['get', 'post', 'patch', 'delete']
 
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = RecipePagination
     permission_classes = (OwnerOrReadOnly,)
@@ -174,7 +175,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """Получение доступных тэгов."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
     pagination_class = None
 
