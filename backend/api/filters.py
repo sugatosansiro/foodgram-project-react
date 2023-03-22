@@ -1,9 +1,8 @@
-from django_filters.rest_framework import (FilterSet, filters,
-                                           ModelMultipleChoiceFilter,
-                                           BooleanFilter, CharFilter)
 from django_filters import rest_framework
-
-from recipes.models import Tag, Recipe, Ingredient
+from django_filters.rest_framework import (BooleanFilter, CharFilter,
+                                           FilterSet,
+                                           ModelMultipleChoiceFilter)
+from recipes.models import Ingredient, Recipe, Tag
 
 
 class RecipeFilter(rest_framework.FilterSet):

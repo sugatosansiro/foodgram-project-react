@@ -1,11 +1,7 @@
 from django.contrib import admin
-
+from recipes.models import (Favorite, Follow, Ingredient, Recipe,
+                            RecipeIngredients, ShoppingCart, Tag)
 from users.models import User
-
-from recipes.models import (
-    Ingredient, Tag, Recipe, RecipeIngredients,
-    Favorite, ShoppingCart, Follow
-)
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -45,10 +41,12 @@ class TagAdmin(admin.ModelAdmin):
 class RecipeAdmin(admin.ModelAdmin):
 
     def added_to_favorites_amount(self, obj):
-        return Favorite.objects,filter(recipe=obj).count()
-    
-    added_to_favorites_amount.short_description = 'Количество добавлений в избранное'
-    
+        return Favorite.objects, filter(recipe=obj).count()
+
+    added_to_favorites_amount.short_description = (
+        'Количество добавлений в избранное'
+    )
+
     list_display = ('id', 'name', 'author', 'cooking_time', )
     search_fields = ('id', 'name', 'author', 'tags', 'cooking_time', )
     list_filter = ('name', 'author', 'tags', )

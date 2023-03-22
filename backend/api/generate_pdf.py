@@ -1,7 +1,7 @@
 from django.http.response import HttpResponse
+from recipes.models import RecipeIngredients
 from reportlab.pdfbase import pdfmetrics, ttfonts
 from reportlab.pdfgen import canvas
-from recipes.models import RecipeIngredients
 
 
 def generate_pdf_shopping_cart(request):

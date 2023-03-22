@@ -3,12 +3,12 @@ import base64
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import transaction
-from users.models import User
-from recipes.models import (Follow, Ingredient, Favorite, ShoppingCart,
-                            Recipe, RecipeIngredients, Ingredient, Tag)
+from djoser.serializers import UserCreateSerializer, UserSerializer
+from recipes.models import (Favorite, Follow, Ingredient, Recipe,
+                            RecipeIngredients, ShoppingCart, Tag)
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
-from djoser.serializers import UserCreateSerializer, UserSerializer
+from users.models import User
 
 
 class UserExtendedSerializer(UserCreateSerializer):
@@ -22,7 +22,7 @@ class UserExtendedSerializer(UserCreateSerializer):
         if request is None or request.user.is_anonymous:
             return False
         return Follow.objects.filter(user=request.user, author=obj).exists()
-    
+
     def get_recipes(self, obj):
         recipes_limit = self.context.get(
             'recipes_limit',
@@ -34,7 +34,7 @@ class UserExtendedSerializer(UserCreateSerializer):
             many=True,
             context=self.context
         ).data
-    
+
     def get_recipes_count(self, obj):
         return obj.recipes.count()
 
@@ -54,7 +54,7 @@ class UserExtendedSerializer(UserCreateSerializer):
 
 class CustomUserSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField()
-    
+
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
         if request is None or request.user.is_anonymous:
@@ -125,7 +125,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 class AmountSerializer(serializers.ModelSerializer):
     amount = RecipeIngredientSerializer()
-    
+
     class Meta:
         model = Tag
         fields = ('amount')
@@ -149,7 +149,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
             RecipeIngredients.objects.filter(recipe=obj).all(),
             many=True
         ).data
-    
+
     class Meta:
         model = Recipe
         fields = (
@@ -175,10 +175,12 @@ class IngredientCreateInRecipeSerializer(serializers.ModelSerializer):
         model = RecipeIngredients
         fields = ('recipe', 'id', 'amount',)
 
+
 class TagsCreateInRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id',)
+
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     ingredients = IngredientCreateInRecipeSerializer(many=True)
@@ -194,14 +196,14 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         if Recipe.objects.filter(name=data['name']).exists():
             raise serializers.ValidationError(
                 'Рецепт с таким именем уже существует. Придумайте отличное.'
-            )             
+            )
         return data
 
     def validate_ingredients(self, value):
         if len(value) < 1:
             raise serializers.ValidationError('Добавьте хотябы один игридиент')
         return value
-    
+
     @transaction.atomic
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
@@ -252,7 +254,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             many=True
         ).data
         return representation
-    
+
     class Meta:
         model = Recipe
         exclude = ('pub_date', )
@@ -279,7 +281,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
                 'Рецепт уже добавлен в Избранное'
             )
         return data
-    
+
     def to_representation(self, instance):
         return RecipeMinifiedSerializer(
             instance.recipe,

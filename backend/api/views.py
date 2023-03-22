@@ -1,25 +1,23 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from rest_framework import status
-
-from rest_framework import filters, viewsets
-from django_filters import rest_framework as filters
-from rest_framework.pagination import BasePagination
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
-from users.models import User
-from .filters import RecipeFilter, IngredientFilter
-from recipes.models import (Ingredient, Tag, Recipe,
-                            Favorite, ShoppingCart, Follow)
+from recipes.models import (Favorite, Follow, Ingredient, Recipe, ShoppingCart,
+                            Tag)
 from recipes.pagination import RecipePagination
-from .mixins import ListCreateDestroyViewSet, CreateAndDeleteRelatedMixin
-from .permissions import OwnerOrReadOnly, AdminOnly, IsAdminUserOrReadOnly
-from .serializers import (FollowSerializer, CustomUserSerializer,
-                          CustomUserCreateSerializer, TagSerializer,
-                          UserExtendedSerializer, IngredientSerializer,
-                          RecipeMinifiedSerializer, RecipeListSerializer,
-                          RecipeCreateUpdateSerializer)
+from rest_framework import filters, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.pagination import BasePagination
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from users.models import User
+
+from .filters import IngredientFilter, RecipeFilter
 from .generate_pdf import generate_pdf_shopping_cart
+from .mixins import CreateAndDeleteRelatedMixin, ListCreateDestroyViewSet
+from .permissions import AdminOnly, IsAdminUserOrReadOnly, OwnerOrReadOnly
+from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
+                          FollowSerializer, IngredientSerializer,
+                          RecipeCreateUpdateSerializer, RecipeListSerializer,
+                          RecipeMinifiedSerializer, TagSerializer,
+                          UserExtendedSerializer)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -59,7 +57,7 @@ class CustomUserViewSet(UserViewSet, CreateAndDeleteRelatedMixin):
 
     def destroy(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-    
+
     def get_serializer_class(self):
         if self.action in ('subscribe', 'subscriptions'):
             return UserExtendedSerializer
@@ -112,13 +110,13 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
             return [OwnerOrReadOnly()]
         else:
             return super().get_permissions()
-    
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
     def destroy(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-    
+
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):
             return RecipeCreateUpdateSerializer
@@ -132,7 +130,9 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
         return self.create_and_delete_related(
             pk=pk,
             klass=ShoppingCart,
-            create_failed_message='Не удалось добавить рецепт в список покупок',
+            create_failed_message=(
+                'Не удалось добавить рецепт в список покупок'
+            ),
             delete_failed_message='Рецепт отсутствует в списке покупок',
             field_to_create_or_delete_name='recipe'
         )
@@ -159,7 +159,7 @@ class TagViewSet(ListCreateDestroyViewSet):
     serializer_class = TagSerializer
     permission_classes = (IsAdminUserOrReadOnly,)
     pagination_class = None
-    
+
     def perform_create(self, serializer):
         serializer.save(
             name=self.request.data["name"], slug=self.request.data["slug"]
@@ -192,7 +192,7 @@ class FollowViewSet(UserViewSet):
         pages = self.paginate_queryset(follows)
         serializer = FollowSerializer(pages, many=True)
         return self.get_paginated_response(serializer.data)
-    
+
     @action(methods=['post', 'delete'], detail=True)
     def subscribe(self, request, **kwargs):
         author = get_object_or_404(User, id=self.kwargs.get('id'))

@@ -1,7 +1,8 @@
-from django.db import models
 from typing import List, Optional
-from django.db.models import Exists, OuterRef
+
 from django.core.validators import MinValueValidator
+from django.db import models
+from django.db.models import Exists, OuterRef
 from users.models import User
 
 
@@ -63,14 +64,15 @@ class RecipeQuerySet(models.QuerySet):
             is_favorited=Exists(
                 Favorite.objects.filter(
                     user_id=user_id, recipe__pk=OuterRef('pk')
-                )            
+                )
             ),
             is_in_shopping_cart=Exists(
                 ShoppingCart.objects.filter(
                     user_id=user_id, recipe__pk=OuterRef('pk')
-                )            
+                )
             )
         )
+
 
 class Recipe(models.Model):
     """Модель для рецептов"""
@@ -126,7 +128,7 @@ class Recipe(models.Model):
         default=False
     )
 
-    objects = RecipeQuerySet.as_manager() # чтобы включились annotations
+    objects = RecipeQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'Рецепт'

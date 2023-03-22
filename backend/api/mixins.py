@@ -1,13 +1,12 @@
-from typing import Union, Type
+from typing import Type, Union
+
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
+from recipes.models import Favorite, Follow, ShoppingCart
 from rest_framework import mixins, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-
-
-from recipes.models import Favorite, ShoppingCart, Follow
 
 
 class ListCreateDestroyViewSet(
