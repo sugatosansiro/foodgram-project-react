@@ -22,7 +22,7 @@ jobs:
 
     - name: Test with flake8
       run: |
-        flake8 --per-file-ignores='./foodgram/settings.py:E501'  # python -m flake8
+        flake8 --per-file-ignores='./backend/foodgram/settings.py:E501'  # python -m flake8
 
   send_message_on_tests:
     runs-on: ubuntu-latest
