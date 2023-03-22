@@ -160,7 +160,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
             'ingredients',
             'is_favorited',
             'is_in_shopping_cart',
-            )
+        )
 
 
 class IngredientCreateInRecipeSerializer(serializers.ModelSerializer):
