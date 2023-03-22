@@ -74,7 +74,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
-          cd foodgram-project-react/infra  # создать эту папку в корне на сервере
+          cd foodgram-project-react/infra
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:v1
           sudo docker-compose stop
