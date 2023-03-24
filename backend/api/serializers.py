@@ -7,9 +7,9 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from recipes.models import (Favorite, Follow, Ingredient, Recipe,
-                            RecipeIngredients, ShoppingCart, Tag)
-from users.models import User
+from ..recipes.models import (Favorite, Follow, Ingredient, Recipe,
+                              RecipeIngredients, ShoppingCart, Tag)
+from ..users.models import User
 
 
 class UserExtendedSerializer(UserCreateSerializer):

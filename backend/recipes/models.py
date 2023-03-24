@@ -1,10 +1,10 @@
 from typing import List, Optional
 
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Exists, OuterRef
 
-from users.models import User
+from ..users.models import User
 
 
 class Ingredient(models.Model):
