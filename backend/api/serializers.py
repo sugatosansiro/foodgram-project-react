@@ -4,10 +4,11 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import transaction
 from djoser.serializers import UserCreateSerializer, UserSerializer
-from recipes.models import (Favorite, Follow, Ingredient, Recipe,
-                            RecipeIngredients, ShoppingCart, Tag)
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
+
+from recipes.models import (Favorite, Follow, Ingredient, Recipe,
+                            RecipeIngredients, ShoppingCart, Tag)
 from users.models import User
 
 
@@ -204,13 +205,8 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Добавьте хотябы один игридиент')
         return value
 
-    @transaction.atomic
-    def create(self, validated_data):
-        ingredients = validated_data.pop('ingredients')
-        tags = validated_data.pop('tags')
-        recipe = Recipe.objects.create(**validated_data)
-        recipe.tags.set(tags)
-
+    @staticmethod
+    def bulk_create_ingredients(self, recipe, ingredients):
         create_ingredients = [
             RecipeIngredients(
                 recipe=recipe,
@@ -219,9 +215,17 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             )
             for ingredient in ingredients
         ]
-        RecipeIngredients.objects.bulk_create(
+        return RecipeIngredients.objects.bulk_create(
             create_ingredients
         )
+
+    @transaction.atomic
+    def create(self, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        recipe = Recipe.objects.create(**validated_data)
+        recipe.tags.set(tags)
+        self.bulk_create_ingredients(recipe, ingredients)
         return recipe
 
     def update(self, instance, validated_data):
@@ -231,18 +235,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             instance.tags.set(tags)
         if ingredients is not None:
             instance.ingredients.clear()
-
-            create_ingredients = [
-                RecipeIngredients(
-                    recipe=instance,
-                    ingredient=ingredient['ingredient'],
-                    amount=ingredient['amount']
-                )
-                for ingredient in ingredients
-            ]
-            RecipeIngredients.objects.bulk_create(
-                create_ingredients
-            )
+            self.bulk_create_ingredients(instance, ingredients)
         return super().update(instance, validated_data)
 
     def to_representation(self, obj):

@@ -2,11 +2,12 @@ from typing import Type, Union
 
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
-from recipes.models import Favorite, Follow, ShoppingCart
 from rest_framework import mixins, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+
+from recipes.models import Favorite, Follow, ShoppingCart
 
 
 class ListCreateDestroyViewSet(
@@ -50,8 +51,7 @@ class CreateAndDeleteRelatedMixin:
             klass_obj = klass.objects.filter(**kwargs).first()
             if klass_obj is None:
                 raise ValidationError({'errors': delete_failed_message})
-            else:
-                klass_obj.delete()
+            klass_obj.delete()
             response = Response(status=status.HTTP_204_NO_CONTENT)
         else:
             raise ValidationError({'errors': 'Неверный метод запроса'})

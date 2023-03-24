@@ -1,13 +1,14 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from recipes.models import (Favorite, Follow, Ingredient, Recipe, ShoppingCart,
-                            Tag)
-from recipes.pagination import RecipePagination
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import BasePagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
+from recipes.models import (Favorite, Follow, Ingredient, Recipe, ShoppingCart,
+                            Tag)
+from recipes.pagination import RecipePagination
 from users.models import User
 
 from .filters import IngredientFilter, RecipeFilter
@@ -53,8 +54,7 @@ class CustomUserViewSet(UserViewSet, CreateAndDeleteRelatedMixin):
     def get_permissions(self):
         if self.action in ('subscribe', 'subscriptions'):
             return [IsAuthenticated()]
-        else:
-            return super().get_permissions()
+        return super().get_permissions()
 
     def destroy(self, request, *args, **kwargs):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -62,8 +62,7 @@ class CustomUserViewSet(UserViewSet, CreateAndDeleteRelatedMixin):
     def get_serializer_class(self):
         if self.action in ('subscribe', 'subscriptions'):
             return UserExtendedSerializer
-        else:
-            return super().get_serializer_class()
+        return super().get_serializer_class()
 
     @action(methods=['post', 'delete'], detail=True)
     def subscribe(self, request, pk=None):
@@ -107,10 +106,9 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
             'download_shopping_cart'
         ):
             return [IsAuthenticated()]
-        elif self.action == 'delete':
+        if self.action == 'delete':
             return [OwnerOrReadOnly()]
-        else:
-            return super().get_permissions()
+        return super().get_permissions()
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -121,10 +119,9 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):
             return RecipeCreateUpdateSerializer
-        elif self.action in ('shopping_cart', 'favorite'):
+        if self.action in ('shopping_cart', 'favorite'):
             return RecipeMinifiedSerializer
-        else:
-            return RecipeListSerializer
+        return RecipeListSerializer
 
     @action(methods=['post', 'delete'], detail=True)
     def shopping_cart(self, request, pk=None):
@@ -163,11 +160,11 @@ class TagViewSet(ListCreateDestroyViewSet):
 
     def perform_create(self, serializer):
         serializer.save(
-            name=self.request.data["name"], slug=self.request.data["slug"]
+            name=self.request.data['name'], slug=self.request.data['slug']
         )
 
     def perform_destroy(self, serializer):
-        serializer = get_object_or_404(Tag, slug=self.kwargs.get("slug"))
+        serializer = get_object_or_404(Tag, slug=self.kwargs.get('slug'))
         serializer.delete()
 
 
@@ -199,15 +196,8 @@ class FollowViewSet(UserViewSet):
         author = get_object_or_404(User, id=self.kwargs.get('id'))
         if request.method == 'POST':
             serializer = FollowSerializer(author, data=request.data)
-            if not serializer.is_valid():
-                return Response(
-                    serializer.errors,
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            Follow.objects.create(
-                user=self.request.user,
-                author=author
-            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         follow = get_object_or_404(
             Follow,

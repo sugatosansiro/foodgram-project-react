@@ -1,7 +1,15 @@
 from django.http.response import HttpResponse
-from recipes.models import RecipeIngredients
 from reportlab.pdfbase import pdfmetrics, ttfonts
 from reportlab.pdfgen import canvas
+
+from recipes.models import RecipeIngredients
+
+FONT_SIZE = 14
+HEIGHT = 700
+HEIGHT_REDUCTION = 20
+INDENT_X = 100
+INDENT_Y = 750
+STRING_INDENT_X = 80
 
 
 def generate_pdf_shopping_cart(request):
@@ -12,30 +20,28 @@ def generate_pdf_shopping_cart(request):
     pdf = canvas.Canvas(response)
     arial = ttfonts.TTFont('Arial', '../data/arial.ttf')
     pdfmetrics.registerFont(arial)
-    pdf.setFont('Arial', 14)
-    print('Дошел до строчки 16')
-
+    pdf.setFont('Arial', FONT_SIZE)
     ingredients = RecipeIngredients.objects.filter(
         recipe__shopping_cart__user=request.user
     ).values_list(
         'ingredient__name', 'amount', 'ingredient__measurement_unit'
     )
-    print('Дошел до строчки 23')
     ingr_list = {}
     for name, amount, unit in ingredients:
         if name not in ingr_list:
             ingr_list[name] = {'amount': amount, 'unit': unit}
         else:
             ingr_list[name]['amount'] += amount
-    height = 700
+    height = HEIGHT
 
-    pdf.drawString(100, 750, 'Список покупок')
+    pdf.drawString(INDENT_X, INDENT_Y, 'Список покупок')
     for i, (name, data) in enumerate(ingr_list.items(), start=1):
-        print(f'Дошел до строчки 34: {data}')
         pdf.drawString(
-            80, height, f'{i}. {name} - {data["amount"]} {data["unit"]}'
+            STRING_INDENT_X,
+            height,
+            f'{i}. {name} - {data["amount"]} {data["unit"]}'
         )
-        height -= 20
+        height -= HEIGHT_REDUCTION
     pdf.showPage()
     pdf.save()
 

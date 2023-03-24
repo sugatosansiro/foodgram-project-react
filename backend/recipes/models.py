@@ -1,8 +1,9 @@
 from typing import List, Optional
 
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import Exists, OuterRef
+
 from users.models import User
 
 
@@ -111,6 +112,12 @@ class Recipe(models.Model):
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления (в минутах)',
         help_text='В минутах',
+        validators=[
+            MinValueValidator(1, 'Минимальное время приготовления - 1'),
+            MaxValueValidator(
+                32767, 'Максимальное время приготовления - 32767'
+            ),
+        ]
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
@@ -153,12 +160,16 @@ class RecipeIngredients(models.Model):
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
         default=1,
-        validators=[MinValueValidator(1, 'Минимальное количество - 1')]
+        validators=[
+            MinValueValidator(1, 'Минимальное количество - 1'),
+            MaxValueValidator(32767, 'Максимальное количество - 32767'),
+        ]
     )
 
     class Meta:
         verbose_name = 'Количество ингридиентов в рецепте'
         verbose_name_plural = 'Количество ингридиентов в рецепте'
+        ordering = ('recipe', 'ingredient',)
         constraints = (
             models.UniqueConstraint(
                 fields=('ingredient', 'recipe'),
@@ -228,8 +239,8 @@ class ShoppingCart(models.Model):
 
     def __str__(self):
         return (
-            f'Пользователь "{self.user}" / '
-            f'Рецепт "{self.recipe.name}": {self.recipe}'
+            f'Пользователь {self.user} / '
+            f'Рецепт {self.recipe.name}: {self.recipe}'
         )
 
 
@@ -251,6 +262,7 @@ class Follow(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+        ordering = ('user', 'author',)
         constraints = (
             models.UniqueConstraint(
                 fields=('user', 'author', ),
