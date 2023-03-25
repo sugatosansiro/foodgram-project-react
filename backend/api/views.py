@@ -1,28 +1,23 @@
+from api.filters import IngredientFilter, RecipeFilter
+from api.generate_pdf import generate_pdf_shopping_cart
+from api.mixins import CreateAndDeleteRelatedMixin, ListCreateDestroyViewSet
+from api.permissions import AdminOnly, IsAdminUserOrReadOnly, OwnerOrReadOnly
+from api.serializers import (CustomUserCreateSerializer, CustomUserSerializer,
+                             FollowSerializer, IngredientSerializer,
+                             RecipeCreateUpdateSerializer,
+                             RecipeListSerializer, RecipeMinifiedSerializer,
+                             TagSerializer, UserExtendedSerializer)
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
+from recipes.models import (Favorite, Follow, Ingredient, Recipe, ShoppingCart,
+                            Tag)
+from recipes.pagination import RecipePagination
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import BasePagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
-from backend.api.filters import IngredientFilter, RecipeFilter
-from backend.api.generate_pdf import generate_pdf_shopping_cart
-from backend.api.mixins import (CreateAndDeleteRelatedMixin,
-                                ListCreateDestroyViewSet)
-from backend.api.permissions import (AdminOnly, IsAdminUserOrReadOnly,
-                                     OwnerOrReadOnly)
-from backend.api.serializers import (CustomUserCreateSerializer,
-                                     CustomUserSerializer, FollowSerializer,
-                                     IngredientSerializer,
-                                     RecipeCreateUpdateSerializer,
-                                     RecipeListSerializer,
-                                     RecipeMinifiedSerializer, TagSerializer,
-                                     UserExtendedSerializer)
-from backend.recipes.models import (Favorite, Follow, Ingredient, Recipe,
-                                    ShoppingCart, Tag)
-from backend.recipes.pagination import RecipePagination
-from backend.users.models import User
+from users.models import User
 
 
 class UserViewSet(viewsets.ModelViewSet):

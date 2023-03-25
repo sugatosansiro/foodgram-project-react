@@ -4,12 +4,11 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import transaction
 from djoser.serializers import UserCreateSerializer, UserSerializer
+from recipes.models import (Favorite, Follow, Ingredient, Recipe,
+                            RecipeIngredients, ShoppingCart, Tag)
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
-
-from backend.recipes.models import (Favorite, Follow, Ingredient, Recipe,
-                                    RecipeIngredients, ShoppingCart, Tag)
-from backend.users.models import User
+from users.models import User
 
 
 class UserExtendedSerializer(UserCreateSerializer):
