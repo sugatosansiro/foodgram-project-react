@@ -23,7 +23,6 @@ jobs:
     - name: Test with flake8
       run: |
         python -m flake8
-      # flake8 --per-file-ignores='./backend/foodgram/settings.py:E501'  
 
   send_message_on_tests:
     runs-on: ubuntu-latest
@@ -62,14 +61,12 @@ jobs:
           push: true
           context: ./backend/
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
-          # file: Dockerfile
       - name: Push to Docker Hub (Frontend)
         uses: docker/build-push-action@v2 
         with:
           push: true
           context: ./frontend/
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
-          # file: Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
