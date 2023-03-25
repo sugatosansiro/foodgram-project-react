@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from recipes.models import (Favorite, Follow, Ingredient, Recipe,
-                            RecipeIngredients, ShoppingCart, Tag)
-from users.models import User
+from backend.recipes.models import (Favorite, Follow, Ingredient, Recipe,
+                                    RecipeIngredients, ShoppingCart, Tag)
+from backend.users.models import User
 
 
 class UserAdmin(admin.ModelAdmin):

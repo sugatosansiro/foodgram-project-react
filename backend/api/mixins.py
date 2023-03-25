@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from recipes.models import Favorite, Follow, ShoppingCart
+from backend.recipes.models import Favorite, Follow, ShoppingCart
 
 
 class ListCreateDestroyViewSet(
@@ -17,6 +17,7 @@ class ListCreateDestroyViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
+    """Вьюсет для вывода списка, создания и удаления"""
     pass
 
 

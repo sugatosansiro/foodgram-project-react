@@ -6,19 +6,23 @@ from rest_framework.pagination import BasePagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from recipes.models import (Favorite, Follow, Ingredient, Recipe,
-                            ShoppingCart, Tag)
-from recipes.pagination import RecipePagination
-from users.models import User
-from .filters import IngredientFilter, RecipeFilter
-from .generate_pdf import generate_pdf_shopping_cart
-from .mixins import CreateAndDeleteRelatedMixin, ListCreateDestroyViewSet
-from .permissions import AdminOnly, IsAdminUserOrReadOnly, OwnerOrReadOnly
-from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
-                          FollowSerializer, IngredientSerializer,
-                          RecipeCreateUpdateSerializer, RecipeListSerializer,
-                          RecipeMinifiedSerializer, TagSerializer,
-                          UserExtendedSerializer)
+from backend.api.filters import IngredientFilter, RecipeFilter
+from backend.api.generate_pdf import generate_pdf_shopping_cart
+from backend.api.mixins import (CreateAndDeleteRelatedMixin,
+                                ListCreateDestroyViewSet)
+from backend.api.permissions import (AdminOnly, IsAdminUserOrReadOnly,
+                                     OwnerOrReadOnly)
+from backend.api.serializers import (CustomUserCreateSerializer,
+                                     CustomUserSerializer, FollowSerializer,
+                                     IngredientSerializer,
+                                     RecipeCreateUpdateSerializer,
+                                     RecipeListSerializer,
+                                     RecipeMinifiedSerializer, TagSerializer,
+                                     UserExtendedSerializer)
+from backend.recipes.models import (Favorite, Follow, Ingredient, Recipe,
+                                    ShoppingCart, Tag)
+from backend.recipes.pagination import RecipePagination
+from backend.users.models import User
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -34,6 +38,7 @@ class UserViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,),
         url_path='me')
     def get_current_user_info(self, request):
+        """Функция для информации о пользователе"""
         serializer = CustomUserSerializer(request.user)
         if request.method == 'PATCH':
             serializer = CustomUserCreateSerializer(
