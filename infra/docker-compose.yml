@@ -9,18 +9,14 @@ services:
       - ./.env
 
   frontend: 
-    build: 
-      context: ./frontend 
-      dockerfile: Dockerfile 
+    image: sugatosansiro/foodgram_frontend:latest
     volumes: 
       - ../frontend/:/app/result_build/ 
     depends_on: 
      - db
 
   backend: 
-    build: 
-      context: ./backend 
-      dockerfile: Dockerfile 
+    image: sugatosansiro/foodgram_backend:latest
     volumes: 
      - static_value:/app/static/ 
      - media_value:/app/media/ 
@@ -28,7 +24,6 @@ services:
      - db 
     env_file: 
      - ./.env 
-
 
   nginx:
     image: nginx:1.21.3-alpine
