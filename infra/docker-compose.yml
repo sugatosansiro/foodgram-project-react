@@ -13,7 +13,6 @@ services:
     volumes: 
       - ../frontend/:/app/result_build/ 
     depends_on: 
-     - db
 
   backend: 
     image: sugatosansiro/foodgram_backend:latest
