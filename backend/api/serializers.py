@@ -204,7 +204,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Добавьте хотябы один игридиент')
         return value
 
-    @staticmethod
     def bulk_create_ingredients(self, recipe, ingredients):
         create_ingredients = [
             RecipeIngredients(
