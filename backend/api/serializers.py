@@ -194,7 +194,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        exclude = ('-pub_date', )
+        exclude = ('pub_date', )
 
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
@@ -263,7 +263,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        exclude = ('-pub_date', )
+        exclude = ('pub_date', )
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
