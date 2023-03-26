@@ -156,6 +156,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
             'name',
             'tags',
             'author',
+            'image',
             'pub_date',
             'ingredients',
             'is_favorited',
@@ -180,6 +181,20 @@ class TagsCreateInRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id',)
+
+
+class RecipeSerializer(serializers.ModelSerializer):
+    ingredients = IngredientCreateInRecipeSerializer(many=True)
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Tag.objects.all()
+    )
+    image = Base64ImageField()
+    author = CustomUserSerializer(required=False)
+
+    class Meta:
+        model = Recipe
+        exclude = ('-pub_date', )
 
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
@@ -248,7 +263,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        exclude = ('pub_date', )
+        exclude = ('-pub_date', )
 
 
 class FavoriteSerializer(serializers.ModelSerializer):

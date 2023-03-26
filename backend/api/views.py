@@ -6,7 +6,8 @@ from api.serializers import (CustomUserCreateSerializer, CustomUserSerializer,
                              FollowSerializer, IngredientSerializer,
                              RecipeCreateUpdateSerializer,
                              RecipeListSerializer, RecipeMinifiedSerializer,
-                             TagSerializer, UserExtendedSerializer)
+                             RecipeSerializer, TagSerializer,
+                             UserExtendedSerializer)
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from recipes.models import (Favorite, Follow, Ingredient, Recipe, ShoppingCart,
@@ -91,7 +92,7 @@ class CustomUserViewSet(UserViewSet, CreateAndDeleteRelatedMixin):
 class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     """Вьюсет для рецептов"""
     queryset = Recipe.objects.all()
-    http_method_name = ['get', 'post', 'patch', 'delete']
+    http_method_name = ['get', 'post', 'patch', 'delete', 'retrieve']
 
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = RecipeFilter
@@ -120,6 +121,8 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
             return RecipeCreateUpdateSerializer
         if self.action in ('shopping_cart', 'favorite'):
             return RecipeMinifiedSerializer
+        if self.action in ('retriev'):
+            return RecipeSerializer
         return RecipeListSerializer
 
     @action(methods=['post', 'delete'], detail=True)
