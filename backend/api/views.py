@@ -121,7 +121,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
             return RecipeCreateUpdateSerializer
         if self.action in ('shopping_cart', 'favorite'):
             return RecipeMinifiedSerializer
-        if self.action in ('retriev'):
+        if self.action in ('retrieve'):
             return RecipeSerializer
         return RecipeListSerializer
 
