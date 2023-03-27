@@ -94,11 +94,9 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     """Вьюсет для рецептов"""
     queryset = Recipe.objects.all()
     http_method_name = ['get', 'post', 'patch', 'delete', 'retrieve']
-
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = RecipePagination
-    permission_classes = (OwnerOrReadOnly, IsAdminUserOrReadOnly,)
 
     def get_permissions(self):
         if self.action in (

@@ -20,7 +20,7 @@ class ListCreateDestroyViewSet(
     pass
 
 
-class CreateAndDeleteRelatedMixin:
+class CreateAndDeleteRelatedMixin(ListCreateDestroyViewSet):
     def create_and_delete_related(
             self: ModelViewSet,
             pk: int,
