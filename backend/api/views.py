@@ -7,8 +7,9 @@ from api.serializers import (CartSerializer, CustomUserCreateSerializer,
                              IngredientSerializer,
                              RecipeCreateUpdateSerializer,
                              RecipeListSerializer, RecipeMinifiedSerializer,
-                             SubscriptionSerializer,
-                             TagSerializer, UserExtendedSerializer)  # RecipeSerializer,
+                             SubscriptionSerializer, TagSerializer,
+                             UserExtendedSerializer)
+# RecipeSerializer,
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from recipes.models import (Cart, Favorite, Ingredient, Recipe, Subscription,
