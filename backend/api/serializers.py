@@ -4,8 +4,8 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import transaction
 from djoser.serializers import UserCreateSerializer, UserSerializer
-from recipes.models import (Favorite, Follow, Ingredient, Recipe,
-                            RecipeIngredients, ShoppingCart, Tag)
+from recipes.models import (Cart, Favorite, Ingredient, Recipe,
+                            RecipeIngredients, Subscription, Tag)
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from users.models import User
@@ -21,7 +21,10 @@ class UserExtendedSerializer(UserCreateSerializer):
         request = self.context.get('request')
         if request is None or request.user.is_anonymous:
             return False
-        return Follow.objects.filter(user=request.user, author=obj).exists()
+        return Subscription.objects.filter(
+            user=request.user,
+            author=obj
+        ).exists()
 
     def get_recipes(self, obj):
         recipes_limit = self.context.get(
@@ -59,7 +62,10 @@ class CustomUserSerializer(UserSerializer):
         request = self.context.get('request')
         if request is None or request.user.is_anonymous:
             return False
-        return Follow.objects.filter(user=request.user, author=obj).exists()
+        return Subscription.objects.filter(
+            user=request.user,
+            author=obj
+        ).exists()
 
     class Meta:
         model = User
@@ -295,7 +301,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
         ).data
 
 
-class FollowSerializer(serializers.ModelSerializer):
+class SubscriptionSerializer(serializers.ModelSerializer):
     """Сериализатор для подписки на авторов рецептов"""
     user = serializers.SlugRelatedField(
         slug_field='username',
@@ -309,10 +315,10 @@ class FollowSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = '__all__'
-        model = Follow
+        model = Subscription
         validators = [
             UniqueTogetherValidator(
-                queryset=Follow.objects.all(),
+                queryset=Subscription.objects.all(),
                 fields=('user', 'following')
             )
         ]
@@ -325,7 +331,7 @@ class FollowSerializer(serializers.ModelSerializer):
         return data
 
 
-class ShoppingCartSerializer(FavoriteSerializer):
+class CartSerializer(FavoriteSerializer):
     """Сериализатор для Списка покупок"""
     def validate(self, obj):
         user = self.context['request'].user
@@ -342,4 +348,4 @@ class ShoppingCartSerializer(FavoriteSerializer):
             )
 
     class Meta(FavoriteSerializer.Meta):
-        model = ShoppingCart
+        model = Cart

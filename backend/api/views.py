@@ -2,15 +2,17 @@ from api.filters import IngredientFilter, RecipeFilter
 from api.generate_pdf import generate_pdf_shopping_cart
 from api.mixins import CreateAndDeleteRelatedMixin, ListCreateDestroyViewSet
 from api.permissions import AdminOnly, IsAdminUserOrReadOnly, OwnerOrReadOnly
-from api.serializers import (CustomUserCreateSerializer, CustomUserSerializer,
-                             FollowSerializer, IngredientSerializer,
+from api.serializers import (CartSerializer, CustomUserCreateSerializer,
+                             CustomUserSerializer,
+                             FavoriteSerializer, IngredientSerializer,
                              RecipeCreateUpdateSerializer,
-                             RecipeListSerializer, RecipeMinifiedSerializer,
-                             RecipeSerializer, TagSerializer,
+                             RecipeListSerializer,
+                             RecipeMinifiedSerializer, RecipeSerializer,
+                             SubscriptionSerializer, TagSerializer,
                              UserExtendedSerializer)
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from recipes.models import (Favorite, Follow, Ingredient, Recipe, ShoppingCart,
+from recipes.models import (Favorite, Subscription, Ingredient, Recipe, Cart,
                             Tag)
 from recipes.pagination import RecipePagination
 from rest_framework import status, viewsets
@@ -68,7 +70,7 @@ class CustomUserViewSet(UserViewSet, CreateAndDeleteRelatedMixin):
     def subscribe(self, request, pk=None):
         return self.create_and_delete_related(
             pk=pk,
-            klass=Follow,
+            klass=Subscription,
             create_failed_message='Не удалось совершить подписку',
             delete_failed_message='Такой подписки не существует',
             field_to_create_or_delete_name='author'
@@ -97,7 +99,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = RecipePagination
-    permission_classes = (OwnerOrReadOnly,)
+    permission_classes = (OwnerOrReadOnly, IsAdminUserOrReadOnly,)
 
     def get_permissions(self):
         if self.action in (
@@ -129,7 +131,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     def shopping_cart(self, request, pk=None):
         return self.create_and_delete_related(
             pk=pk,
-            klass=ShoppingCart,
+            klass=Cart,
             create_failed_message=(
                 'Не удалось добавить рецепт в список покупок'
             ),
@@ -179,7 +181,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
 
 
-class FollowViewSet(UserViewSet):
+class SubscriptionViewSet(UserViewSet):
     """Возвращает все подписки пользователя, сделавшего запрос.
     Анонимные запросы запрещены."""
     queryset = User.objects.all()
@@ -190,20 +192,42 @@ class FollowViewSet(UserViewSet):
     def subscriptions(self, request):
         follows = request.user.follower.all()
         pages = self.paginate_queryset(follows)
-        serializer = FollowSerializer(pages, many=True)
+        serializer = SubscriptionSerializer(pages, many=True)
         return self.get_paginated_response(serializer.data)
 
     @action(methods=['post', 'delete'], detail=True)
     def subscribe(self, request, **kwargs):
         author = get_object_or_404(User, id=self.kwargs.get('id'))
         if request.method == 'POST':
-            serializer = FollowSerializer(author, data=request.data)
+            serializer = SubscriptionSerializer(author, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         follow = get_object_or_404(
-            Follow,
+            Subscription,
             user=self.request.user,
             author=author)
         follow.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class FavoriteViewSet(RecipeViewSet):
+    """Возвращает все избранные рецепты пользователя, сделавшего запрос"""
+    serializer_class = FavoriteSerializer
+
+    def get_queryset(self):
+        return Recipe.objects.filter(
+            is_favorited=True,
+            recipe__favorite__user=self.request.user
+        ).all()
+
+
+class CartViewset(RecipeViewSet):
+    """Возвращает список покупок пользователя"""
+    serializer_class = CartSerializer
+
+    def get_queryset(self):
+        return Recipe.objects.filter(
+            is_in_shopping_cart=True,
+            recipe__shopping_cart__user=self.request.user
+        ).all()

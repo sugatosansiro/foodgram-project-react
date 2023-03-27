@@ -1,6 +1,6 @@
 from django.contrib import admin
-from recipes.models import (Favorite, Follow, Ingredient, Recipe,
-                            RecipeIngredients, ShoppingCart, Tag)
+from recipes.models import (Cart, Favorite, Ingredient, Recipe,
+                            RecipeIngredients, Subscription, Tag)
 from users.models import User
 
 
@@ -41,7 +41,7 @@ class TagAdmin(admin.ModelAdmin):
 class RecipeAdmin(admin.ModelAdmin):
 
     def added_to_favorites_amount(self, obj):
-        return Favorite.objects, filter(recipe=obj).count()
+        return Subscription.objects, filter(recipe=obj).count()
 
     added_to_favorites_amount.short_description = (
         'Количество добавлений в избранное'
@@ -69,14 +69,14 @@ class FavoriteAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-class ShoppingCartAdmin(admin.ModelAdmin):
+class CartAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'recipe', )
     search_fields = ('id', 'user', 'recipe', )
     list_filter = ('user', 'recipe', )
     empty_value_display = '-пусто-'
 
 
-class FollowAdmin(admin.ModelAdmin):
+class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'author', )
     search_fields = ('id', 'user', 'author', )
     list_filter = ('user', 'author', )
@@ -88,6 +88,6 @@ admin.site.register(Tag, TagAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(RecipeIngredients, RecipeIngredientAdmin)
 admin.site.register(Favorite, FavoriteAdmin)
-admin.site.register(ShoppingCart, ShoppingCartAdmin)
-admin.site.register(Follow, FollowAdmin)
+admin.site.register(Cart, CartAdmin)
+admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(User, UserAdmin)

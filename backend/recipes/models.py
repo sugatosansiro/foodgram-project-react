@@ -67,7 +67,7 @@ class RecipeQuerySet(models.QuerySet):
                 )
             ),
             is_in_shopping_cart=Exists(
-                ShoppingCart.objects.filter(
+                Cart.objects.filter(
                     user_id=user_id, recipe__pk=OuterRef('pk')
                 )
             )
@@ -210,7 +210,7 @@ class Favorite(models.Model):
         return f'{self.recipe.name} - {self.user.email}'
 
 
-class ShoppingCart(models.Model):
+class Cart(models.Model):
     """Модель для списка покупок"""
     user = models.ForeignKey(
         User,
@@ -243,7 +243,7 @@ class ShoppingCart(models.Model):
         )
 
 
-class Follow(models.Model):
+class Subscription(models.Model):
     """Модель для подписки"""
     user = models.ForeignKey(
         User,

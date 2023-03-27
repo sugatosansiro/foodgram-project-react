@@ -2,7 +2,7 @@ from typing import Type, Union
 
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
-from recipes.models import Favorite, Follow, ShoppingCart
+from recipes.models import Favorite, Subscription, Cart
 from rest_framework import mixins, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -24,7 +24,7 @@ class CreateAndDeleteRelatedMixin:
     def create_and_delete_related(
             self: ModelViewSet,
             pk: int,
-            klass: Union[Type[Favorite], Type[ShoppingCart], Type[Follow]],
+            klass: Union[Type[Favorite], Type[Cart], Type[Subscription]],
             create_failed_message: str,
             delete_failed_message: str,
             field_to_create_or_delete_name: str,
