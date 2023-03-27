@@ -3,16 +3,15 @@ from api.generate_pdf import generate_pdf_shopping_cart
 from api.mixins import CreateAndDeleteRelatedMixin, ListCreateDestroyViewSet
 from api.permissions import AdminOnly, IsAdminUserOrReadOnly, OwnerOrReadOnly
 from api.serializers import (CartSerializer, CustomUserCreateSerializer,
-                             CustomUserSerializer,
-                             FavoriteSerializer, IngredientSerializer,
+                             CustomUserSerializer, FavoriteSerializer,
+                             IngredientSerializer,
                              RecipeCreateUpdateSerializer,
-                             RecipeListSerializer,
-                             RecipeMinifiedSerializer, RecipeSerializer,
-                             SubscriptionSerializer, TagSerializer,
-                             UserExtendedSerializer)
+                             RecipeListSerializer, RecipeMinifiedSerializer,
+                             RecipeSerializer, SubscriptionSerializer,
+                             TagSerializer, UserExtendedSerializer)
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from recipes.models import (Favorite, Subscription, Ingredient, Recipe, Cart,
+from recipes.models import (Cart, Favorite, Ingredient, Recipe, Subscription,
                             Tag)
 from recipes.pagination import RecipePagination
 from rest_framework import status, viewsets

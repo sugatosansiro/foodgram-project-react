@@ -2,7 +2,7 @@ from typing import Type, Union
 
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
-from recipes.models import Favorite, Subscription, Cart
+from recipes.models import Cart, Favorite, Subscription
 from rest_framework import mixins, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
