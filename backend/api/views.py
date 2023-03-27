@@ -7,8 +7,8 @@ from api.serializers import (CartSerializer, CustomUserCreateSerializer,
                              IngredientSerializer,
                              RecipeCreateUpdateSerializer,
                              RecipeListSerializer, RecipeMinifiedSerializer,
-                             RecipeSerializer, SubscriptionSerializer,
-                             TagSerializer, UserExtendedSerializer)
+                             SubscriptionSerializer,
+                             TagSerializer, UserExtendedSerializer)  # RecipeSerializer,
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from recipes.models import (Cart, Favorite, Ingredient, Recipe, Subscription,
@@ -97,6 +97,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = RecipePagination
+    permission_classes = (OwnerOrReadOnly,)
 
     def get_permissions(self):
         if self.action in (
