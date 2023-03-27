@@ -93,7 +93,7 @@ class CustomUserViewSet(UserViewSet, CreateAndDeleteRelatedMixin):
 class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     """Вьюсет для рецептов"""
     queryset = Recipe.objects.all()
-    http_method_name = ['get', 'post', 'patch', 'delete', 'retrieve']
+    http_method_name = ['get', 'post', 'patch', 'delete']   # 'retrieve'
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = RecipePagination
@@ -120,8 +120,8 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
             return RecipeCreateUpdateSerializer
         if self.action in ('shopping_cart', 'favorite'):
             return RecipeMinifiedSerializer
-        if self.action in ('retrieve'):
-            return RecipeSerializer
+        # if self.action in ('retrieve'):
+        #     return RecipeSerializer
         return RecipeListSerializer
 
     @action(methods=['post', 'delete'], detail=True)
