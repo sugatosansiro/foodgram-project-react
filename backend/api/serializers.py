@@ -197,30 +197,30 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     #             'Добавьте хотя-бы один ингредиент')
     #     return value
 
-    def validate(self, data):
-        """Валидация ингердиентов и тэгов в рецепте"""
-        ingredients = data.get('ingredients')
-        tags = data.get('tags')
-        if not ingredients:
-            raise serializers.ValidationError(
-                'Добавьте хотя бы один ингредиент'
-            )
-        ingredients_list = []
-        for ingr_i in ingredients:
-            ingredient = get_object_or_404(
-                Ingredient,
-                id=ingr_i.get('id')
-            )
-            if ingredient in ingredients_list:
-                raise serializers.ValidationError(
-                    'Ингредиенты не должны повторяться'
-                )
-            ingredients_list.append(ingredient)
-        if not tags:
-            raise serializers.ValidationError(
-                'Укажите хотя бы один тэг для рецепта'
-            )
-        return data
+    # def validate(self, data):
+    #     """Валидация ингердиентов и тэгов в рецепте"""
+    #     ingredients = data.get('ingredients')
+    #     tags = data.get('tags')
+    #     if not ingredients:
+    #         raise serializers.ValidationError(
+    #             'Добавьте хотя бы один ингредиент'
+    #         )
+    #     ingredients_list = []
+    #     for ingr_i in ingredients:
+    #         ingredient = get_object_or_404(
+    #             Ingredient,
+    #             id=ingr_i.get('id')
+    #         )
+    #         if ingredient in ingredients_list:
+    #             raise serializers.ValidationError(
+    #                 'Ингредиенты не должны повторяться'
+    #             )
+    #         ingredients_list.append(ingredient)
+    #     if not tags:
+    #         raise serializers.ValidationError(
+    #             'Укажите хотя бы один тэг для рецепта'
+    #         )
+    #     return data
 
     def bulk_create_ingredients(self, recipe, ingredients):
         create_ingredients = [
