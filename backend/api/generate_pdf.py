@@ -1,7 +1,8 @@
 from django.http.response import HttpResponse
-from recipes.models import RecipeIngredients
 from reportlab.pdfbase import pdfmetrics, ttfonts
 from reportlab.pdfgen import canvas
+
+from recipes.models import RecipeIngredients
 
 FONT_SIZE = 14
 HEIGHT = 700

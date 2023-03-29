@@ -2,11 +2,12 @@ from typing import Type, Union
 
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
-from recipes.models import Cart, Favorite, Subscription
 from rest_framework import mixins, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+
+from recipes.models import Cart, Favorite, Subscription
 
 
 class ListCreateDestroyViewSet(
@@ -24,7 +25,7 @@ class CreateAndDeleteRelatedMixin():
     def create_and_delete_related(
             self: ModelViewSet,
             pk: int,
-            klass: Union[Type[Favorite], Type[Cart], Type[Subscription]],
+            model: Union[Type[Favorite], Type[Cart], Type[Subscription]],
             create_failed_message: str,
             delete_failed_message: str,
             field_to_create_or_delete_name: str,
@@ -36,7 +37,7 @@ class CreateAndDeleteRelatedMixin():
         }
         if self.request.method == 'POST':
             try:
-                klass.objects.create(**kwargs)
+                model.objects.create(**kwargs)
             except IntegrityError:
                 raise ValidationError({'errors': create_failed_message})
             context = self.get_serializer_context()
@@ -48,7 +49,7 @@ class CreateAndDeleteRelatedMixin():
                 status=status.HTTP_201_CREATED,
             )
         elif self.request.method == 'DELETE':
-            klass_obj = klass.objects.filter(**kwargs).first()
+            klass_obj = model.objects.filter(**kwargs).first()
             if klass_obj is None:
                 raise ValidationError({'errors': delete_failed_message})
             klass_obj.delete()

@@ -1,8 +1,9 @@
-from api.views import (CartViewset, CustomUserViewSet, FavoriteViewSet,
-                       IngredientViewSet, RecipeViewSet, SubscriptionViewSet,
-                       TagViewSet)
 from django.urls import include, path
 from rest_framework import routers
+
+from api.views import (CartViewset, CustomUserViewSet, FavoriteViewSet,
+                       IngredientViewSet, RecipeViewSet,
+                       TagViewSet)
 
 app_name = 'api'
 
@@ -14,7 +15,7 @@ router.register(r'tags', TagViewSet, basename='tags')
 router.register(r'users', CustomUserViewSet, basename='users')
 router.register(
     r'subscriptions',
-    SubscriptionViewSet,
+    CustomUserViewSet,
     basename='subscriptions'
 )
 router.register(r'cart', CartViewset, basename='shopping_cart')

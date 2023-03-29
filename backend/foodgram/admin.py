@@ -1,9 +1,17 @@
 from django.contrib import admin
+
 from recipes.models import (Cart, Favorite, Ingredient, Recipe,
                             RecipeIngredients, Subscription, Tag)
 from users.models import User
 
 
+class RecipeIngredientInline(admin.TabularInline):
+    model = RecipeIngredients
+    min_num = 1
+    extra = 0
+
+
+@admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = (
         'id',
@@ -18,12 +26,7 @@ class UserAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-class RecipeIngredientInline(admin.TabularInline):
-    model = RecipeIngredients
-    min_num = 1
-    extra = 0
-
-
+@admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'measurement_unit', )
     search_fields = ('id', 'name', 'measurement_unit', )
@@ -31,6 +34,7 @@ class IngredientAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+@admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'color', 'slug', )
     search_fields = ('id', 'name', 'color', 'slug', )
@@ -38,10 +42,21 @@ class TagAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+@admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
 
     def added_to_favorites_amount(self, obj):
-        return Subscription.objects, filter(recipe=obj).count()
+        return Subscription.objects.filter(recipe=obj).count()
+
+    # def save_model(self, request, obj, form, change):
+    #     if obj.is_favorited:
+    #         Favorite.objects.create(user=obj.author, recipe=obj)
+    #         obj.is_favorited = True
+    #         obj.save()
+    #     else:
+    #         obj.author.favorite.filter(recipe=obj).delete()
+    #         obj.is_favorited = False
+    #         obj.save()
 
     added_to_favorites_amount.short_description = (
         'Количество добавлений в избранное'
@@ -55,6 +70,7 @@ class RecipeAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+@admin.register(RecipeIngredients)
 class RecipeIngredientAdmin(admin.ModelAdmin):
     list_display = ('id', 'recipe', 'ingredient', 'amount', )
     search_fields = ('id', 'recipe', 'ingredient', 'amount', )
@@ -62,6 +78,7 @@ class RecipeIngredientAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+@admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'recipe', )
     search_fields = ('id', 'user', 'recipe', )
@@ -69,6 +86,7 @@ class FavoriteAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+@admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'recipe', )
     search_fields = ('id', 'user', 'recipe', )
@@ -76,18 +94,9 @@ class CartAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+@admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'author', )
     search_fields = ('id', 'user', 'author', )
     list_filter = ('user', 'author', )
     empty_value_display = '-пусто-'
-
-
-admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(Tag, TagAdmin)
-admin.site.register(Recipe, RecipeAdmin)
-admin.site.register(RecipeIngredients, RecipeIngredientAdmin)
-admin.site.register(Favorite, FavoriteAdmin)
-admin.site.register(Cart, CartAdmin)
-admin.site.register(Subscription, SubscriptionAdmin)
-admin.site.register(User, UserAdmin)
