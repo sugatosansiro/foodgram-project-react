@@ -70,7 +70,7 @@ class CustomUserViewSet(UserViewSet, CreateAndDeleteRelatedMixin):
 
 class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     """Вьюсет для рецептов"""
-    http_method_name = ['get', 'post', 'patch', 'delete']  # 'retrieve'
+    http_method_name = ['GET', 'POST', 'PATCH', 'DELETE']  # 'retrieve'
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = RecipePagination
@@ -97,7 +97,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
                 'download_shopping_cart'
         ):
             return [IsAuthenticated()]
-        if self.action == 'delete':
+        if self.action == 'DELETE':
             return [CurrentUserOrAdminOrReadOnly()]
         return super().get_permissions()
 
@@ -116,7 +116,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
         #     return RecipeSerializer
         return RecipeListSerializer
 
-    @action(methods=['post', 'delete'], detail=True)
+    @action(methods=['POST', 'DELETE'], detail=True)
     def shopping_cart(self, request, pk=None):
         return self.create_and_delete_related(
             pk=pk,
@@ -133,7 +133,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
         """Вызов выгрузки PDF-файла со списком покупок"""
         return generate_pdf_shopping_cart(request)
 
-    @action(methods=['post', 'delete'], detail=True)
+    @action(methods=['POST', 'DELETE'], detail=True)
     def favorite(self, request, pk=None):
         return self.create_and_delete_related(
             pk=pk,
