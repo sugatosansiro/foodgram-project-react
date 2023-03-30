@@ -16,11 +16,27 @@ from api.serializers import (CartSerializer, CustomUserCreateSerializer,
                              IngredientSerializer,
                              RecipeCreateUpdateSerializer,
                              RecipeListSerializer, RecipeMinifiedSerializer,
+<<<<<<< HEAD
+                             SubscriptionSerializer, TagSerializer,
+                             SubscriptionGetSerializer)
+from django.shortcuts import get_object_or_404
+from django_filters import rest_framework as filters
+from recipes.models import (Cart, Favorite, Ingredient, Recipe, Subscription,
+                            Tag)
+from recipes.pagination import RecipePagination
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.pagination import BasePagination
+from rest_framework.permissions import IsAuthenticated
+from djoser.views import UserViewSet
+from rest_framework.response import Response
+=======
                              TagSerializer,
                              SubscriptionGetSerializer)
 from recipes.models import (Cart, Favorite, Ingredient, Recipe, Subscription,
                             Tag)
 from recipes.pagination import RecipePagination
+>>>>>>> 723139c04a250676d63205c42f3c68750598f333
 from users.models import User
 
 
@@ -70,11 +86,25 @@ class CustomUserViewSet(UserViewSet, CreateAndDeleteRelatedMixin):
 
 class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     """Вьюсет для рецептов"""
-    http_method_name = ['GET', 'POST', 'PATCH', 'DELETE']  # 'retrieve'
+    http_method_name = ['get', 'post', 'patch', 'delete']  # 'retrieve'
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = RecipePagination
     permission_classes = (CurrentUserOrAdminOrReadOnly,)
+
+    def get_queryset(self):
+        if self.request.user.is_anonymous:
+            return (
+                Recipe.objects
+                .select_related('author')
+                .prefetch_related('tags', 'ingredients')
+            )
+        return (
+            Recipe.objects
+            .add_user_annotations(user_id=self.request.user.pk)
+            .select_related('author')
+            .prefetch_related('tags', 'ingredients')
+        )
 
     def get_queryset(self):
         if self.request.user.is_anonymous:
@@ -97,7 +127,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
                 'download_shopping_cart'
         ):
             return [IsAuthenticated()]
-        if self.action == 'DELETE':
+        if self.action == 'delete':
             return [CurrentUserOrAdminOrReadOnly()]
         return super().get_permissions()
 
@@ -116,7 +146,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
         #     return RecipeSerializer
         return RecipeListSerializer
 
-    @action(methods=['POST', 'DELETE'], detail=True)
+    @action(methods=['post', 'delete'], detail=True)
     def shopping_cart(self, request, pk=None):
         return self.create_and_delete_related(
             pk=pk,
@@ -133,7 +163,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
         """Вызов выгрузки PDF-файла со списком покупок"""
         return generate_pdf_shopping_cart(request)
 
-    @action(methods=['POST', 'DELETE'], detail=True)
+    @action(methods=['post', 'delete'], detail=True)
     def favorite(self, request, pk=None):
         return self.create_and_delete_related(
             pk=pk,
@@ -220,3 +250,4 @@ class CartViewset(RecipeViewSet):
             is_in_shopping_cart=True,
             recipe__shopping_cart__user=self.request.user
         ).all()
+

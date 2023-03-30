@@ -58,6 +58,16 @@ class RecipeAdmin(admin.ModelAdmin):
     #         obj.is_favorited = False
     #         obj.save()
 
+    # def save_model(self, request, obj, form, change):
+    #     if obj.is_favorited:
+    #         Favorite.objects.create(user=obj.author, recipe=obj)
+    #         obj.is_favorited = True
+    #         obj.save()
+    #     else:
+    #         obj.author.favorite.filter(recipe=obj).delete()
+    #         obj.is_favorited = False
+    #         obj.save()
+
     added_to_favorites_amount.short_description = (
         'Количество добавлений в избранное'
     )
