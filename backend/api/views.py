@@ -26,7 +26,7 @@ from users.models import User
 
 class CustomUserViewSet(UserViewSet, CreateAndDeleteRelatedMixin):
     """Cпециальный вьюсет для пользователей"""
-    http_method_name = ['get', 'post', 'delete']
+    http_method_name = ['GET', 'POST', 'DELETE']
     lookup_field = 'pk'
 
     def get_permissions(self):
@@ -43,7 +43,7 @@ class CustomUserViewSet(UserViewSet, CreateAndDeleteRelatedMixin):
         return super().get_serializer_class()
 
     @action(
-        methods=['post', 'delete'], detail=True
+        methods=['POST', 'DELETE'], detail=True
     )
     def subscribe(self, request, pk=None):
         return self.create_and_delete_related(
@@ -70,11 +70,18 @@ class CustomUserViewSet(UserViewSet, CreateAndDeleteRelatedMixin):
 
 class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     """Вьюсет для рецептов"""
-    http_method_name = ['get', 'post', 'patch', 'delete']  # 'retrieve'
+    http_method_name = ['GET', 'POST', 'PATCH', 'DELETE']
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = RecipePagination
     permission_classes = (CurrentUserOrAdminOrReadOnly,)
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PATCH'):
+            return RecipeCreateUpdateSerializer
+        if self.action in ('shopping_cart', 'favorite'):
+            return RecipeMinifiedSerializer
+        return RecipeListSerializer
 
     def get_queryset(self):
         if self.request.user.is_anonymous:
@@ -97,7 +104,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
                 'download_shopping_cart'
         ):
             return [IsAuthenticated()]
-        if self.action == 'delete':
+        if self.action == 'DELETE':
             return [CurrentUserOrAdminOrReadOnly()]
         return super().get_permissions()
 
@@ -107,16 +114,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     # def destroy(self, request, *args, **kwargs):
     #     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def get_serializer_class(self):
-        if self.request.method in ('CREATE', 'PATCH'):
-            return RecipeCreateUpdateSerializer
-        if self.action in ('shopping_cart', 'favorite'):
-            return RecipeMinifiedSerializer
-        # if self.action in ('retrieve'):
-        #     return RecipeSerializer
-        return RecipeListSerializer
-
-    @action(methods=['post', 'delete'], detail=True)
+    @action(methods=['POST', 'DELETE'], detail=True)
     def shopping_cart(self, request, pk=None):
         return self.create_and_delete_related(
             pk=pk,
@@ -133,7 +131,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
         """Вызов выгрузки PDF-файла со списком покупок"""
         return generate_pdf_shopping_cart(request)
 
-    @action(methods=['post', 'delete'], detail=True)
+    @action(methods=['POST', 'DELETE'], detail=True)
     def favorite(self, request, pk=None):
         return self.create_and_delete_related(
             pk=pk,

@@ -5,9 +5,9 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 # from django.shortcuts import get_object_or_404
 from rest_framework.validators import UniqueTogetherValidator
 from rest_framework import serializers
-
 from recipes.models import (Cart, Favorite, Ingredient, Recipe,
-                            RecipeIngredients, Subscription, Tag)
+                            RecipeIngredients,
+                            Subscription, Tag)
 from users.models import User
 
 
