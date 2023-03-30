@@ -16,27 +16,11 @@ from api.serializers import (CartSerializer, CustomUserCreateSerializer,
                              IngredientSerializer,
                              RecipeCreateUpdateSerializer,
                              RecipeListSerializer, RecipeMinifiedSerializer,
-<<<<<<< HEAD
-                             SubscriptionSerializer, TagSerializer,
-                             SubscriptionGetSerializer)
-from django.shortcuts import get_object_or_404
-from django_filters import rest_framework as filters
-from recipes.models import (Cart, Favorite, Ingredient, Recipe, Subscription,
-                            Tag)
+                             SubscriptionGetSerializer, TagSerializer)
+
+from recipes.models import (Cart, Ingredient, Favorite, Recipe,
+                            Subscription, Tag)
 from recipes.pagination import RecipePagination
-from rest_framework import status, viewsets
-from rest_framework.decorators import action
-from rest_framework.pagination import BasePagination
-from rest_framework.permissions import IsAuthenticated
-from djoser.views import UserViewSet
-from rest_framework.response import Response
-=======
-                             TagSerializer,
-                             SubscriptionGetSerializer)
-from recipes.models import (Cart, Favorite, Ingredient, Recipe, Subscription,
-                            Tag)
-from recipes.pagination import RecipePagination
->>>>>>> 723139c04a250676d63205c42f3c68750598f333
 from users.models import User
 
 

@@ -111,22 +111,7 @@ class RecipeIngredientGetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RecipeIngredients
-<<<<<<< HEAD
         fields = ('id', 'amount')
-
-
-class RecipeIngredientGetSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField(source='ingredient.id')
-    name = serializers.ReadOnlyField(source='ingredient.name')
-    measurement_unit = serializers.ReadOnlyField(
-        source='ingredient.measurement_unit'
-    )
-
-    class Meta:
-        model = RecipeIngredients
-=======
->>>>>>> 723139c04a250676d63205c42f3c68750598f333
-        fields = ('id', 'name', 'amount', 'measurement_unit')
 
 
 class RecipeMinifiedSerializer(serializers.ModelSerializer):
@@ -138,15 +123,10 @@ class RecipeMinifiedSerializer(serializers.ModelSerializer):
 class RecipeListSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     author = CustomUserSerializer()
-<<<<<<< HEAD
-    ingredients = RecipeIngredientGetSerializer(many=True,
-                                                source='recipe_ingredient')
-=======
     ingredients = RecipeIngredientGetSerializer(
         many=True,
         source='recipe_ingredient'
     )
->>>>>>> 723139c04a250676d63205c42f3c68750598f333
     is_favorited = serializers.BooleanField()
     is_in_shopping_cart = serializers.BooleanField()
 
@@ -188,7 +168,7 @@ class IngredientCreateInRecipeSerializer(serializers.ModelSerializer):
 #     image = Base64ImageField()
 #     author = CustomUserSerializer(required=False)
 
-<<<<<<< HEAD
+
 class TagsCreateInRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
@@ -205,8 +185,16 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'tags', 'author', 'ingredients', 'name', 'image', 'text', 'cooking_time')
-=======
+        fields = (
+            'id',
+            'tags',
+            'author',
+            'ingredients',
+            'name',
+            'image',
+            'text',
+            'cooking_time'
+        )
 #     class Meta:
 #         model = Recipe
 #         fields = (
@@ -219,7 +207,6 @@ class RecipeSerializer(serializers.ModelSerializer):
 #             'text',
 #             'cooking_time'
 #         )
->>>>>>> 723139c04a250676d63205c42f3c68750598f333
 
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
@@ -236,9 +223,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     #         raise serializers.ValidationError(
     #             'Добавьте хотя-бы один ингредиент')
     #     return value
-<<<<<<< HEAD
-=======
-
+    # 
     # def validate(self, data):
     #     """Валидация ингердиентов и тэгов в рецепте"""
     #     ingredients = data.get('ingredients')
@@ -263,7 +248,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     #             'Укажите хотя бы один тэг для рецепта'
     #         )
     #     return data
->>>>>>> 723139c04a250676d63205c42f3c68750598f333
 
     def bulk_create_ingredients(self, recipe, ingredients):
         create_ingredients = [
@@ -299,11 +283,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
 # убираем_дубли ранее был RecipeSerializer
     def to_representation(self, obj):
-<<<<<<< HEAD
         return RecipeSerializer(
-=======
-        return RecipeListSerializer(
->>>>>>> 723139c04a250676d63205c42f3c68750598f333
             obj, context={'request': self.context.get('request')}
         ).data
 
@@ -369,33 +349,6 @@ class FavoriteSerializer(serializers.ModelSerializer):
 #                 'Зачем подписаться на самого себя?)'
 #             )
 #         return data
-
-
-class SubscriptionGetSerializer(CustomUserSerializer):
-    recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.SerializerMethodField()
-
-    # Переопределение на базовый
-    update = serializers.ModelSerializer.update
-
-    def get_recipes(self, obj):
-        request = self.context.get('request')
-        recipes_limit = request.query_params.get('recipes_limit')
-        recipes = obj.recipes.all()[:int(recipes_limit)]
-        return RecipeMinifiedSerializer(
-            recipes,
-            many=True,
-            context=self.context
-        ).data
-
-    def get_recipes_count(self, obj):
-        return obj.recipes.count()
-
-    class Meta:
-        model = User
-        fields = (
-            CustomUserSerializer.Meta.fields + ('recipes', 'recipes_count')
-        )
 
 
 class SubscriptionGetSerializer(CustomUserSerializer):

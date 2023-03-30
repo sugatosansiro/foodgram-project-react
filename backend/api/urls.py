@@ -1,15 +1,9 @@
-<<<<<<< HEAD
-from api.views import (CartViewset, CustomUserViewSet, FavoriteViewSet,
-                       IngredientViewSet, RecipeViewSet,
-                       TagViewSet)
-=======
->>>>>>> 723139c04a250676d63205c42f3c68750598f333
 from django.urls import include, path
 from rest_framework import routers
 
 from api.views import (CartViewset, CustomUserViewSet, FavoriteViewSet,
-                       IngredientViewSet, RecipeViewSet,
-                       TagViewSet)
+                       IngredientViewSet, RecipeViewSet, TagViewSet)
+
 
 app_name = 'api'
 
