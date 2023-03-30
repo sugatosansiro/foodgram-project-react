@@ -90,20 +90,6 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
             .prefetch_related('tags', 'ingredients')
         )
 
-    def get_queryset(self):
-        if self.request.user.is_anonymous:
-            return (
-                Recipe.objects
-                .select_related('author')
-                .prefetch_related('tags', 'ingredients')
-            )
-        return (
-            Recipe.objects
-            .add_user_annotations(user_id=self.request.user.pk)
-            .select_related('author')
-            .prefetch_related('tags', 'ingredients')
-        )
-
     def get_permissions(self):
         if self.action in (
                 'shopping_cart',
@@ -234,4 +220,3 @@ class CartViewset(RecipeViewSet):
             is_in_shopping_cart=True,
             recipe__shopping_cart__user=self.request.user
         ).all()
-

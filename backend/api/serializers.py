@@ -223,7 +223,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     #         raise serializers.ValidationError(
     #             'Добавьте хотя-бы один ингредиент')
     #     return value
-    # 
+    #
     # def validate(self, data):
     #     """Валидация ингердиентов и тэгов в рецепте"""
     #     ingredients = data.get('ingredients')
