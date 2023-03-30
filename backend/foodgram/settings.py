@@ -5,9 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
-SECRET_KEY = 'hhz7l-ltdismtf@bzyz+rple7*s*w$jak%whj@(@u0eok^f9k4'
+SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 DEBUG = True
 
@@ -61,7 +60,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'api.wsgi.application'
 
-# Вернуть обратно для развертки на сервере
+
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
@@ -72,14 +71,6 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT')
     }
 }
-
-# Временно вернул SQLITE для запуска миграций локально, чтобы пройти Review
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
 
 if DEBUG:
     AUTH_PASSWORD_VALIDATORS = []
@@ -109,7 +100,6 @@ USE_L10N = True
 
 STATIC_URL = '/static_backend/'
 
-# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_backend')
 
 MEDIA_URL = '/media/'

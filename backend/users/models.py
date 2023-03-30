@@ -41,10 +41,6 @@ class User(AbstractUser):
         max_length=150,
         blank=False,
     )
-    # password = models.CharField(
-    #     verbose_name='Пароль',
-    #     max_length=150,
-    # )
 
     @property
     def is_user(self):

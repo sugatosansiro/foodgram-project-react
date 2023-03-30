@@ -111,9 +111,6 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    # def destroy(self, request, *args, **kwargs):
-    #     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
     @action(methods=['POST', 'DELETE'], detail=True)
     def shopping_cart(self, request, pk=None):
         return self.create_and_delete_related(
@@ -166,36 +163,6 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = IngredientFilter
     pagination_class = None
-
-
-# class SubscriptionViewSet(CustomUserViewSet):
-#     """Возвращает все подписки пользователя, сделавшего запрос.
-#     Анонимные запросы запрещены."""
-#     queryset = User.objects.all()
-#     serializer_class = CustomUserSerializer
-#     pagination_class = BasePagination
-#
-#     @action(detail=False)
-#     def subscriptions(self, request):
-#         follows = request.user.follower.all()
-#         pages = self.paginate_queryset(follows)
-#         serializer = SubscriptionSerializer(pages, many=True)
-#         return self.get_paginated_response(serializer.data)
-#
-#     @action(methods=['post', 'delete'], detail=True)
-#     def subscribe(self, request, **kwargs):
-#         author = get_object_or_404(User, id=self.kwargs.get('id'))
-#         if request.method == 'POST':
-#             serializer = SubscriptionSerializer(author, data=request.data)
-#             serializer.is_valid(raise_exception=True)
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         follow = get_object_or_404(
-#             Subscription,
-#             user=self.request.user,
-#             author=author)
-#         follow.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class FavoriteViewSet(RecipeViewSet):

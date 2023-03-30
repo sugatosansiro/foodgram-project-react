@@ -124,16 +124,6 @@ class Recipe(models.Model):
         auto_now_add=True,
         db_index=True
     )
-    # is_favorited = models.BooleanField(
-    #     verbose_name='Рецепт в избранном',
-    #     unique=False,
-    #     default=False
-    # )
-    # is_in_shopping_cart = models.BooleanField(
-    #     verbose_name='Рецепт в списке покупок',
-    #     unique=False,
-    #     default=False
-    # )
 
     objects = RecipeQuerySet.as_manager()
 
@@ -268,7 +258,6 @@ class Subscription(models.Model):
                 fields=('user', 'author', ),
                 name='unique_follow',
             ),
-            # Нельзя подписаться на самого себя
             models.CheckConstraint(
                 name="prevent_self_subscription",
                 check=~models.Q(user=models.F("author")),
