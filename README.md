@@ -68,7 +68,7 @@ sudo docker-compose exec web python manage.py migrate
 sudo docker-compose exec web python manage.py createsuperuser
 sudo docker-compose exec web python manage.py collectstatic --no-input 
 ```
-После успешного выполнения команд, зайдите на < IP-адрес вашего сервера >/admin (например http://130.193.43.181/admin/) и убедитесь, что страница отображается полностью - статика подгрузилась.
+После успешного выполнения команд, зайдите на < IP-адрес вашего сервера >/admin (например http://84.252.141.130/admin/) и убедитесь, что страница отображается полностью - статика подгрузилась.
 
 3.4 На сервере заполнените базу тестовыми данными, ранее сохраненными в файле fixtures.json - находясь в той же директории с файлом docker-compose.yaml, выполните команду:
 ```
