@@ -1,15 +1,20 @@
 import base64
+import re
 
 from django.core.files.base import ContentFile
 from django.db import transaction
 from djoser.serializers import UserCreateSerializer, UserSerializer
-from rest_framework.validators import UniqueTogetherValidator
 from rest_framework import serializers
+from rest_framework import status
+from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import (Cart, Favorite, Ingredient, Recipe,
                             RecipeIngredients,
                             Subscription, Tag)
 from users.models import User
+
+MIN = 1
+MAX = 32767
 
 
 class CustomUserSerializer(UserSerializer):
@@ -38,6 +43,19 @@ class CustomUserSerializer(UserSerializer):
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     password = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        """Переопределяем метод validate для проверки заполняемых
+        полей модели пользователя на предмет специальных символов."""
+        attrs = super().validate(attrs)
+        regex = re.compile('[^a-zA-Z0-9]')
+        for field, value in attrs.items():
+            if regex.search(value) and field not in ['email', 'password']:
+                raise serializers.ValidationError(
+                    f'Ошибка в поле {field}:'
+                    f'введены запрещенные символы'
+                )
+        return attrs
 
     class Meta:
         model = User
@@ -113,6 +131,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
             'tags',
             'author',
             'image',
+            'text',
             'pub_date',
             'ingredients',
             'is_favorited',
@@ -170,6 +189,35 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     )
     image = Base64ImageField()
     author = CustomUserSerializer(required=False)
+
+    def validate_ingredients(self, data):
+        """Валидация ингердиентов в рецепте"""
+        print(data)
+        ingredients = self.initial_data.get('ingredients')
+        print(ingredients)
+        if not ingredients:
+            raise serializers.ValidationError(
+                {'ingredients': 'Добавьте хотя бы один ингредиент'},
+                status.HTTP_400_BAD_REQUEST,
+            )
+        valid_list = []
+        for ingredient in ingredients:
+            ingr_id = ingredient.get('id')
+            if ingr_id in valid_list:
+                print(f'{ingr_id} in valid_list')
+                raise serializers.ValidationError(
+                    {'ingredients': 'Ингредиенты не должны повторяться'},
+                    status.HTTP_400_BAD_REQUEST,
+                )
+            valid_list.append(ingredient.get('id'))
+            if not MIN <= int(ingredient['amount']) <= MAX:
+                raise serializers.ValidationError(
+                    {'ingredients':
+                        f'Количество ингредиента должно быть не менее {MIN}'
+                        f' и меньше {MAX}'},
+                    status.HTTP_400_BAD_REQUEST,
+                )
+        return data
 
     def bulk_create_ingredients(self, recipe, ingredients):
         create_ingredients = [
