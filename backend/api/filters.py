@@ -24,7 +24,8 @@ from recipes.models import Ingredient, Recipe, Tag
 #         super().__init__(*args, **kwargs)
 #         request = self.request
 #         if isinstance(request.user, AnonymousUser):
-            # self.Meta.fields = ('tags',)
+#             self.Meta.fields = ('tags',)
+
 
 class RecipeFilter(rest_framework.FilterSet):
     tags = ModelMultipleChoiceFilter(
