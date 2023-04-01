@@ -13,7 +13,7 @@ from api.mixins import CreateAndDeleteRelatedMixin, ListCreateDestroyViewSet
 from api.permissions import IsAdminUserOrReadOnly
 from api.serializers import (CartSerializer, CustomUserCreateSerializer,
                              FavoriteSerializer,
-                             IngredientSerializer, RecipeSerializer,
+                             IngredientSerializer,  # RecipeSerializer,
                              RecipeCreateUpdateSerializer,
                              RecipeListSerializer, RecipeMinifiedSerializer,
                              SubscriptionGetSerializer, TagSerializer)
@@ -81,8 +81,8 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
             return RecipeCreateUpdateSerializer
         if self.action in ('shopping_cart', 'favorite'):
             return RecipeMinifiedSerializer
-        if self.request.user.is_anonymous:
-            return RecipeSerializer
+        # if self.request.user.is_anonymous:
+        #     return RecipeSerializer
         return RecipeListSerializer
 
     def get_queryset(self):
