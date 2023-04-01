@@ -104,7 +104,10 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
                 'download_shopping_cart'
         ):
             return [IsAuthenticated()]
-        if self.action == 'DELETE':
+        if self.action in (
+                'DELETE',
+                'PATCH'
+        ):
             return [CurrentUserOrAdminOrReadOnly()]
         return super().get_permissions()
 
