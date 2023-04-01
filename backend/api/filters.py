@@ -4,7 +4,7 @@ from django_filters.rest_framework import (BooleanFilter, CharFilter,
                                            ModelMultipleChoiceFilter)
 
 from recipes.models import Ingredient, Recipe, Tag
-from django.contrib.auth.models import AnonymousUser
+# from django.contrib.auth.models import AnonymousUser
 
 # ГПТКОД
 # class RecipeFilter(rest_framework.FilterSet):
@@ -24,7 +24,7 @@ from django.contrib.auth.models import AnonymousUser
 #         super().__init__(*args, **kwargs)
 #         request = self.request
 #         if isinstance(request.user, AnonymousUser):
-#             self.Meta.fields = ('tags', 'is_in_shopping_cart', 'is_favorited')
+            # self.Meta.fields = ('tags',)
 
 class RecipeFilter(rest_framework.FilterSet):
     tags = ModelMultipleChoiceFilter(

@@ -13,7 +13,7 @@ from api.mixins import CreateAndDeleteRelatedMixin, ListCreateDestroyViewSet
 from api.permissions import IsAdminUserOrReadOnly
 from api.serializers import (CartSerializer, CustomUserCreateSerializer,
                              FavoriteSerializer,
-                             IngredientSerializer, RecipeSerializer,
+                             IngredientSerializer,
                              RecipeCreateUpdateSerializer,
                              RecipeListSerializer, RecipeMinifiedSerializer,
                              SubscriptionGetSerializer, TagSerializer)
@@ -81,8 +81,6 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
             return RecipeCreateUpdateSerializer
         if self.action in ('shopping_cart', 'favorite'):
             return RecipeMinifiedSerializer
-        # if self.request.user.is_anonymous:
-        #     return RecipeSerializer
         return RecipeListSerializer
 
     def get_queryset(self):
@@ -100,22 +98,18 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
         )
 
     def get_permissions(self):
-        # if self.action == 'GET':
-        #     return [AllowAny()]
         if self.action in (
-                # 'POST',
                 'shopping_cart',
                 'favorite',
                 'download_shopping_cart'
         ):
             return [IsAuthenticated()]
-        if self.action in (
+        if self.request.method in (
                 'DELETE',
-                'PATCH'
+                'PATCH',
         ):
             return [CurrentUserOrAdminOrReadOnly()]
         return super().get_permissions()
-        # return [AllowAny()]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
