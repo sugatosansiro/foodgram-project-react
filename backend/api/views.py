@@ -100,8 +100,8 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
         )
 
     def get_permissions(self):
-        # if self.action in ('GET',):
-        #     return [AllowAny()]
+        if self.action == 'GET':
+            return [AllowAny()]
         if self.action in (
                 'shopping_cart',
                 'favorite',
