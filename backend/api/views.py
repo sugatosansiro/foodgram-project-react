@@ -103,7 +103,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
         # if self.action == 'GET':
         #     return [AllowAny()]
         if self.action in (
-                'POST',
+                # 'POST',
                 'shopping_cart',
                 'favorite',
                 'download_shopping_cart'
