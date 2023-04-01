@@ -120,8 +120,8 @@ class RecipeListSerializer(serializers.ModelSerializer):
         many=True,
         source='recipe_ingredient'
     )
-    # is_favorited = serializers.BooleanField()   # этот
-    # is_in_shopping_cart = serializers.BooleanField()  # этот
+    is_favorited = serializers.BooleanField()   # этот
+    is_in_shopping_cart = serializers.BooleanField()  # этот
 
     # is_favorited = serializers.SerializerMethodField()
     # is_in_shopping_cart = serializers.SerializerMethodField()
@@ -143,8 +143,8 @@ class RecipeListSerializer(serializers.ModelSerializer):
             'tags',
             'author',
             'ingredients',
-            # 'is_favorited',
-            # 'is_in_shopping_cart',
+            'is_favorited',
+            'is_in_shopping_cart',
             'name',
             'image',
             'text',

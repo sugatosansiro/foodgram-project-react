@@ -81,8 +81,8 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
             return RecipeCreateUpdateSerializer
         if self.action in ('shopping_cart', 'favorite'):
             return RecipeMinifiedSerializer
-        if self.request.user.is_anonymous:
-            return RecipeSerializer
+        # if self.request.user.is_anonymous:
+        #     return RecipeSerializer
         return RecipeListSerializer
 
     def get_queryset(self):
@@ -114,8 +114,8 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
                 'PATCH'
         ):
             return [CurrentUserOrAdminOrReadOnly()]
-        # return super().get_permissions()
-        return [AllowAny()]
+        return super().get_permissions()
+        # return [AllowAny()]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
