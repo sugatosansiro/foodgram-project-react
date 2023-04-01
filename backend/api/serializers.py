@@ -120,14 +120,17 @@ class RecipeListSerializer(serializers.ModelSerializer):
         many=True,
         source='recipe_ingredient'
     )
-    # is_favorited = serializers.BooleanField()  # этот
+    # is_favorited = serializers.BooleanField()   # этот
     # is_in_shopping_cart = serializers.BooleanField()  # этот
+    
     # is_favorited = serializers.SerializerMethodField()
     # is_in_shopping_cart = serializers.SerializerMethodField()
+
     # def get_is_favorited(self, obj):
     #     if self.context['request'].user.is_anonymous:
     #         return False
     #     return serializers.BooleanField()
+
     # def get_is_in_shopping_cart(self, obj):
     #     if self.context['request'].user.is_anonymous:
     #         return False
