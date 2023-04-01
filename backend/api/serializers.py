@@ -203,7 +203,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         ingredients = self.initial_data.get('ingredients')
         if not ingredients:
             raise serializers.ValidationError(
-                'Добавьте хотя бы один ингредиент'
+                [{'errors': ['Добавьте хотя бы один ингредиент']}]
             )
         valid_list = []
         for ingredient in ingredients:
@@ -215,8 +215,10 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             valid_list.append(ingredient.get('id'))
             if not MIN <= int(ingredient['amount']) <= MAX:
                 raise serializers.ValidationError(
-                    f'Количество ингредиента должно быть не менее {MIN}'
-                    f' и меньше {MAX}'
+                    [{'errors': [
+                        f'Количество ингредиента должно быть не менее {MIN}'
+                        f' и меньше {MAX}'
+                    ]}]
                 )
         return data
 
