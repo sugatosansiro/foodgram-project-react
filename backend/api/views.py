@@ -72,16 +72,9 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     """Вьюсет для рецептов"""
     http_method_name = ['GET', 'POST', 'PATCH', 'DELETE']
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = RecipeFilter
+    filterset_class = RecipeFilter      # тут добавил новинку
     pagination_class = RecipePagination
     permission_classes = (CurrentUserOrAdminOrReadOnly,)
-
-    def get_serializer_class(self):
-        if self.request.method in ('POST', 'PATCH'):
-            return RecipeCreateUpdateSerializer
-        if self.action in ('shopping_cart', 'favorite'):
-            return RecipeMinifiedSerializer
-        return RecipeListSerializer
 
     def get_queryset(self):
         if self.request.user.is_anonymous:
@@ -96,6 +89,24 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
             .select_related('author')
             .prefetch_related('tags', 'ingredients')
         )
+
+# # тут добавил новинку ниже
+#     def get_filterset(self):
+#         print(
+#             f'SELF.request.USER.is_anonymous'
+#             f' - {self.request.user.is_anonymous}'
+#         )
+#         if self.request.user.is_Aanonymous:
+#             return RecipeFilter69
+#         return RecipeFilter
+# тут добавил новинку выше
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PATCH'):
+            return RecipeCreateUpdateSerializer
+        if self.action in ('shopping_cart', 'favorite'):
+            return RecipeMinifiedSerializer
+        return RecipeListSerializer  # ранее был RecipeListSerializer
 
     def get_permissions(self):
         if self.action in (
