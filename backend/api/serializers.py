@@ -129,7 +129,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
         if self.context['request'].user.is_anonymous:
             return False
         return serializers.BooleanField()
-    
+
     def get_is_in_shopping_cart(self, obj):
         if self.context['request'].user.is_anonymous:
             return False
