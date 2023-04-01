@@ -13,7 +13,7 @@ from api.mixins import CreateAndDeleteRelatedMixin, ListCreateDestroyViewSet
 from api.permissions import IsAdminUserOrReadOnly
 from api.serializers import (CartSerializer, CustomUserCreateSerializer,
                              FavoriteSerializer,
-                             IngredientSerializer,
+                             IngredientSerializer, RecipeSerializer,
                              RecipeCreateUpdateSerializer,
                              RecipeListSerializer, RecipeMinifiedSerializer,
                              SubscriptionGetSerializer, TagSerializer)
@@ -54,7 +54,7 @@ class CustomUserViewSet(UserViewSet, CreateAndDeleteRelatedMixin):
             field_to_create_or_delete_name='author'
         )
 
-    @action(methods=['get'], detail=False)
+    @action(methods=['GET'], detail=False)
     def subscriptions(self, request):
         queryset = User.objects.filter(
             following__user=self.request.user
@@ -74,13 +74,15 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = RecipePagination
-    permission_classes = (CurrentUserOrAdminOrReadOnly,)
+    permission_classes = (AllowAny,)
 
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PATCH'):
             return RecipeCreateUpdateSerializer
         if self.action in ('shopping_cart', 'favorite'):
             return RecipeMinifiedSerializer
+        if self.request.user.is_anonymous:
+            return RecipeSerializer
         return RecipeListSerializer
 
     def get_queryset(self):
@@ -98,8 +100,8 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
         )
 
     def get_permissions(self):
-        if self.action in ('GET'):
-            return [AllowAny()]
+        # if self.action in ('GET',):
+        #     return [AllowAny()]
         if self.action in (
                 'shopping_cart',
                 'favorite',

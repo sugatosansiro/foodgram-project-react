@@ -60,6 +60,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'api.wsgi.application'
 
+# Вернуть обратно для развертки на сервере
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
@@ -70,6 +71,14 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT')
     }
 }
+
+# Временно вернул SQLITE для запуска миграций локально, чтобы пройти Review
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 if DEBUG:
     AUTH_PASSWORD_VALIDATORS = []

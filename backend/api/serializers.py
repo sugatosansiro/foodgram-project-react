@@ -148,35 +148,6 @@ class IngredientCreateInRecipeSerializer(serializers.ModelSerializer):
     )
     amount = serializers.IntegerField(write_only=True, min_value=1)
 
-    def validate_ingredients(self, data):
-        """Валидация ингердиентов в рецепте"""
-        print(data)
-        ingredients = self.initial_data.get('ingredients')
-        print(ingredients)
-        if not ingredients:
-            raise serializers.ValidationError(
-                {'ingredients': 'Добавьте хотя бы один ингредиент'},
-                status.HTTP_400_BAD_REQUEST,
-            )
-        valid_list = []
-        for ingredient in ingredients:
-            ingr_id = ingredient.get('id')
-            if ingr_id in valid_list:
-                print(f'{ingr_id} in valid_list')
-                raise serializers.ValidationError(
-                    {'ingredients': 'Ингредиенты не должны повторяться'},
-                    status.HTTP_400_BAD_REQUEST,
-                )
-            valid_list.append(ingredient.get('id'))
-            if not MIN <= int(ingredient['amount']) <= MAX:
-                raise serializers.ValidationError(
-                    {'ingredients':
-                        f'Количество ингредиента должно быть не менее {MIN}'
-                        f' и меньше {MAX}'},
-                    status.HTTP_400_BAD_REQUEST,
-                )
-        return data
-
     class Meta:
         model = RecipeIngredients
         fields = ('recipe', 'id', 'amount',)
@@ -219,34 +190,31 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     author = CustomUserSerializer(required=False)
 
-    # def validate_ingredients(self, data):
-    #     """Валидация ингердиентов в рецепте"""
-    #     print(data)
-    #     ingredients = self.initial_data.get('ingredients')
-    #     print(ingredients)
-    #     if not ingredients:
-    #         raise serializers.ValidationError(
-    #             {'ingredients': 'Добавьте хотя бы один ингредиент'},
-    #             status.HTTP_400_BAD_REQUEST,
-    #         )
-    #     valid_list = []
-    #     for ingredient in ingredients:
-    #         ingr_id = ingredient.get('id')
-    #         if ingr_id in valid_list:
-    #             print(f'{ingr_id} in valid_list')
-    #             raise serializers.ValidationError(
-    #                 {'ingredients': 'Ингредиенты не должны повторяться'},
-    #                 status.HTTP_400_BAD_REQUEST,
-    #             )
-    #         valid_list.append(ingredient.get('id'))
-    #         if not MIN <= int(ingredient['amount']) <= MAX:
-    #             raise serializers.ValidationError(
-    #                 {'ingredients':
-    #                     f'Количество ингредиента должно быть не менее {MIN}'
-    #                     f' и меньше {MAX}'},
-    #                 status.HTTP_400_BAD_REQUEST,
-    #             )
-    #     return data
+    def validate_ingredients(self, data):
+        """Валидация ингердиентов в рецепте"""
+        ingredients = self.initial_data.get('ingredients')
+        if not ingredients:
+            raise serializers.ValidationError(
+                {'ingredients': 'Добавьте хотя бы один ингредиент'},
+                status.HTTP_400_BAD_REQUEST,
+            )
+        valid_list = []
+        for ingredient in ingredients:
+            ingr_id = ingredient.get('id')
+            if ingr_id in valid_list:
+                raise serializers.ValidationError(
+                    {'ingredients': 'Ингредиенты не должны повторяться'},
+                    status.HTTP_400_BAD_REQUEST,
+                )
+            valid_list.append(ingredient.get('id'))
+            if not MIN <= int(ingredient['amount']) <= MAX:
+                raise serializers.ValidationError(
+                    {'ingredients':
+                        f'Количество ингредиента должно быть не менее {MIN}'
+                        f' и меньше {MAX}'},
+                    status.HTTP_400_BAD_REQUEST,
+                )
+        return data
 
     def bulk_create_ingredients(self, recipe, ingredients):
         create_ingredients = [
