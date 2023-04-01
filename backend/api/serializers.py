@@ -139,17 +139,17 @@ class RecipeListSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = (
             'id',
-            'name',
             'tags',
             'author',
-            'image',
-            'text',
-            # 'pub_date',
             'ingredients',
             'is_favorited',
             'is_in_shopping_cart',
+            'name',
+            'image',
+            'text',
             'cooking_time'
         )
+
 
 
 class IngredientCreateInRecipeSerializer(serializers.ModelSerializer):
