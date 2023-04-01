@@ -204,24 +204,20 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         ingredients = self.initial_data.get('ingredients')
         if not ingredients:
             raise serializers.ValidationError(
-                {'ingredients': 'Добавьте хотя бы один ингредиент'},
-                status.HTTP_400_BAD_REQUEST,
+                'Добавьте хотя бы один ингредиент'
             )
         valid_list = []
         for ingredient in ingredients:
             ingr_id = ingredient.get('id')
             if ingr_id in valid_list:
                 raise serializers.ValidationError(
-                    {'ingredients': 'Ингредиенты не должны повторяться'},
-                    status.HTTP_400_BAD_REQUEST,
+                    [{'errors': ['Ингредиенты не должны повторяться']}]
                 )
             valid_list.append(ingredient.get('id'))
             if not MIN <= int(ingredient['amount']) <= MAX:
                 raise serializers.ValidationError(
-                    {'ingredients':
-                        f'Количество ингредиента должно быть не менее {MIN}'
-                        f' и меньше {MAX}'},
-                    status.HTTP_400_BAD_REQUEST,
+                    f'Количество ингредиента должно быть не менее {MIN}'
+                    f' и меньше {MAX}'
                 )
         return data
 
