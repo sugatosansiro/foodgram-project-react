@@ -170,26 +170,26 @@ class TagsCreateInRecipeSerializer(serializers.ModelSerializer):
         fields = ('id',)
 
 
-# class RecipeSerializer(serializers.ModelSerializer):
-#     ingredients = RecipeIngredientGetSerializer(
-#         many=True, source='recipe_ingredient'
-#     )
-#     tags = TagSerializer(many=True)
-#     image = Base64ImageField()
-#     author = CustomUserSerializer(required=False)
+class RecipeSerializer(serializers.ModelSerializer):
+    ingredients = RecipeIngredientGetSerializer(
+        many=True, source='recipe_ingredient'
+    )
+    tags = TagSerializer(many=True)
+    image = Base64ImageField()
+    author = CustomUserSerializer(required=False)
 
-#     class Meta:
-#         model = Recipe
-#         fields = (
-#             'id',
-#             'tags',
-#             'author',
-#             'ingredients',
-#             'name',
-#             'image',
-#             'text',
-#             'cooking_time'
-#         )
+    class Meta:
+        model = Recipe
+        fields = (
+            'id',
+            'tags',
+            'author',
+            'ingredients',
+            'name',
+            'image',
+            'text',
+            'cooking_time'
+        )
 
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
