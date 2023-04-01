@@ -90,13 +90,13 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
             .prefetch_related('tags', 'ingredients')
         )
 
-
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PATCH'):
             return RecipeCreateUpdateSerializer
         if self.action in ('shopping_cart', 'favorite'):
             return RecipeMinifiedSerializer
         return RecipeListSerializer
+
     def get_permissions(self):
         if self.action in (
                 'shopping_cart',
