@@ -3,7 +3,7 @@ from django_filters import rest_framework as filters
 from djoser.views import UserViewSet
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from djoser.permissions import CurrentUserOrAdminOrReadOnly
 
@@ -98,6 +98,8 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
         )
 
     def get_permissions(self):
+        if self.action in ('GET'):
+            return [AllowAny()]
         if self.action in (
                 'shopping_cart',
                 'favorite',
