@@ -122,7 +122,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
     )
     # is_favorited = serializers.BooleanField()   # этот
     # is_in_shopping_cart = serializers.BooleanField()  # этот
-    
+
     # is_favorited = serializers.SerializerMethodField()
     # is_in_shopping_cart = serializers.SerializerMethodField()
 
