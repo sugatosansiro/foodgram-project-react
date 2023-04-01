@@ -113,7 +113,8 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
                 'PATCH'
         ):
             return [CurrentUserOrAdminOrReadOnly()]
-        return super().get_permissions()
+        # return super().get_permissions()
+        return [AllowAny()]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
