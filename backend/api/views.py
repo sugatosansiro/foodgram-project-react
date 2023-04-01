@@ -3,7 +3,7 @@ from django_filters import rest_framework as filters
 from djoser.views import UserViewSet
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from djoser.permissions import CurrentUserOrAdminOrReadOnly
 
@@ -77,6 +77,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     permission_classes = (CurrentUserOrAdminOrReadOnly,)
 
     def get_queryset(self):
+        print(self.request.user.is_anonymous)
         if self.request.user.is_anonymous:
             return (
                 Recipe.objects
@@ -99,14 +100,19 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
 
     def get_permissions(self):
         if self.action in (
+            'list',
+            'retrieve'
+        ):
+            return [AllowAny()]
+        if self.action in (
                 'shopping_cart',
                 'favorite',
                 'download_shopping_cart'
         ):
             return [IsAuthenticated()]
-        if self.request.method in (
-                'DELETE',
-                'PATCH',
+        if self.action in (
+            'partial_update',
+            'destroy',
         ):
             return [CurrentUserOrAdminOrReadOnly()]
         return super().get_permissions()

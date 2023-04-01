@@ -120,8 +120,18 @@ class RecipeListSerializer(serializers.ModelSerializer):
         many=True,
         source='recipe_ingredient'
     )
-    is_favorited = serializers.BooleanField()
-    is_in_shopping_cart = serializers.BooleanField()
+    is_favorited = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
+
+    def get_is_favorited(self, obj):
+        if self.context['request'].user.is_anonymous:
+            return False
+        return obj.is_favorited
+
+    def get_is_in_shopping_cart(self, obj):
+        if self.context['request'].user.is_anonymous:
+            return False
+        return obj.is_in_shopping_cart
 
     class Meta:
         model = Recipe
@@ -266,7 +276,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
         validators = [
             UniqueTogetherValidator(
                 queryset=Favorite.objects.all(),
-                fields=('user', 'recipe')
+                fields=('user', 'recipe',)
             )
         ]
 
