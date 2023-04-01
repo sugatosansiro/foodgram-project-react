@@ -104,13 +104,13 @@ class RecipeIngredientGetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RecipeIngredients
-        fields = ('id', 'name', 'measurement_unit', 'amount')
+        fields = ('id', 'name', 'measurement_unit', 'amount',)
 
 
 class RecipeMinifiedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
+        fields = ('id', 'name', 'image', 'cooking_time',)
 
 
 class RecipeListSerializer(serializers.ModelSerializer):
@@ -120,21 +120,8 @@ class RecipeListSerializer(serializers.ModelSerializer):
         many=True,
         source='recipe_ingredient'
     )
-    is_favorited = serializers.BooleanField()   # этот
-    is_in_shopping_cart = serializers.BooleanField()  # этот
-
-    # is_favorited = serializers.SerializerMethodField()
-    # is_in_shopping_cart = serializers.SerializerMethodField()
-
-    # def get_is_favorited(self, obj):
-    #     if self.context['request'].user.is_anonymous:
-    #         return False
-    #     return serializers.BooleanField()
-
-    # def get_is_in_shopping_cart(self, obj):
-    #     if self.context['request'].user.is_anonymous:
-    #         return False
-    #     return serializers.BooleanField()
+    is_favorited = serializers.BooleanField()
+    is_in_shopping_cart = serializers.BooleanField()
 
     class Meta:
         model = Recipe
@@ -148,7 +135,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
             'name',
             'image',
             'text',
-            'cooking_time'
+            'cooking_time',
         )
 
 
@@ -189,7 +176,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             'name',
             'image',
             'text',
-            'cooking_time'
+            'cooking_time',
         )
 
 
@@ -321,7 +308,7 @@ class SubscriptionGetSerializer(CustomUserSerializer):
     class Meta:
         model = User
         fields = (
-            CustomUserSerializer.Meta.fields + ('recipes', 'recipes_count')
+            CustomUserSerializer.Meta.fields + ('recipes', 'recipes_count',)
         )
 
 

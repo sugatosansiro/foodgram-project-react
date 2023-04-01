@@ -4,69 +4,6 @@ from django_filters.rest_framework import (BooleanFilter, CharFilter,
                                            ModelMultipleChoiceFilter)
 
 from recipes.models import Ingredient, Recipe, Tag
-# from django.contrib.auth.models import AnonymousUser
-
-
-# # ГПТ 2
-# class RecipeFilter(rest_framework.FilterSet):
-#     tags = ModelMultipleChoiceFilter(
-#         field_name='tags__slug',
-#         to_field_name='slug',
-#         queryset=Tag.objects.all(),
-#     )
-#     is_favorited = BooleanFilter()
-#     is_in_shopping_cart = BooleanFilter()
-
-#     class Meta:
-#         model = Recipe
-#         fields = ('author', 'tags', 'is_in_shopping_cart', 'is_favorited')
-
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         request = self.request
-#         if isinstance(request.user, AnonymousUser):
-#             self.Meta.fields = ('tags',)
-#         else:
-#             self.Meta.fields = (
-#                 'author',
-#                 'tags',
-#                 'is_in_shopping_cart',
-#                 'is_favorited'
-#             )
-
-
-# class RecipeFilter69(rest_framework.FilterSet):
-#     tags = ModelMultipleChoiceFilter(
-#         field_name='tags__slug',
-#         to_field_name='slug',
-#         queryset=Tag.objects.all(),
-#     )
-#     # is_favorited = BooleanFilter()
-#     # is_in_shopping_cart = BooleanFilter()
-
-#     class Meta:
-#         model = Recipe
-#         fields = ('author', 'tags')  # 'is_in_shopping_cart', 'is_favorited'
-
-# # ГПТКОД
-# class RecipeFilter(rest_framework.FilterSet):
-#     tags = ModelMultipleChoiceFilter(
-#         field_name='tags__slug',
-#         to_field_name='slug',
-#         queryset=Tag.objects.all(),
-#     )
-#     is_favorited = BooleanFilter()
-#     is_in_shopping_cart = BooleanFilter()
-
-#     class Meta:
-#         model = Recipe
-#         fields = ('author', 'tags', 'is_in_shopping_cart', 'is_favorited')
-
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         request = self.request
-#         if isinstance(request.user, AnonymousUser):
-#             self.Meta.fields = ('tags',)
 
 
 class RecipeFilter(rest_framework.FilterSet):
@@ -80,7 +17,7 @@ class RecipeFilter(rest_framework.FilterSet):
 
     class Meta:
         model = Recipe
-        fields = ('author', 'tags', 'is_in_shopping_cart', 'is_favorited')
+        fields = ('author', 'tags', 'is_in_shopping_cart', 'is_favorited',)
 
 
 class IngredientFilter(FilterSet):
