@@ -74,7 +74,7 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = RecipePagination
-    permission_classes = (AllowAny,)
+    permission_classes = (CurrentUserOrAdminOrReadOnly,)
 
     def get_serializer_class(self):
         if self.request.method in ('POST', 'PATCH'):
@@ -86,12 +86,12 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
         return RecipeListSerializer
 
     def get_queryset(self):
-        if self.request.user.is_anonymous:
-            return (
-                Recipe.objects
-                .select_related('author')
-                .prefetch_related('tags', 'ingredients')
-            )
+        # if self.request.user.is_anonymous:
+        #     return (
+        #         Recipe.objects
+        #         .select_related('author')
+        #         .prefetch_related('tags', 'ingredients')
+        #     )
         return (
             Recipe.objects
             .add_user_annotations(user_id=self.request.user.pk)
@@ -100,9 +100,10 @@ class RecipeViewSet(viewsets.ModelViewSet, CreateAndDeleteRelatedMixin):
         )
 
     def get_permissions(self):
-        # if self.action == 'GET':
-        #     return [AllowAny()]
+        if self.action == 'GET':
+            return [AllowAny()]
         if self.action in (
+                'POST',
                 'shopping_cart',
                 'favorite',
                 'download_shopping_cart'
